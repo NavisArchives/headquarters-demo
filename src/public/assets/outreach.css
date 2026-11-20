@@ -1,0 +1,224 @@
+.ow-screen{height:calc(100dvh - 112px);min-height:0;display:flex;flex-direction:column;gap:14px;padding-bottom:12px}
+.ow-screen .hero{flex:0 0 auto;margin:0}.ow-tabs{flex:0 0 auto;display:flex;gap:8px;overflow-x:auto}
+.ow-tabs [aria-selected="true"]{background:var(--green);color:var(--on-green);border-color:var(--green)}
+.ow-body{min-height:0;flex:1;overflow:auto;scrollbar-width:thin}.ow-stack{display:flex;flex-direction:column;gap:16px}
+.ow-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.ow-money{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.ow-card{display:flex;flex-direction:column;gap:12px;min-width:0;margin:0}.ow-card h2{font-size:15px;font-weight:600;margin:0}.ow-number{font-size:32px;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.ow-list{min-height:0;max-height:430px;overflow:auto}.ow-list .row{width:100%;text-align:left}.ow-list .who{min-width:0;overflow-wrap:anywhere}
+.ow-notice{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--soft);font-size:13px;margin:0}
+.ow-planner-row{padding:14px 0;border-bottom:1px solid var(--line-soft)}.ow-planner-row .btn{margin:4px 6px 4px 0}
+.ow-field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;font-size:13px}.ow-field input,.ow-field textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}.ow-field textarea{min-height:180px;resize:vertical}
+.ow-modal{max-width:850px;width:calc(100vw - 32px);max-height:90dvh;overflow:auto;padding:24px}.ow-review{max-height:55dvh;overflow:auto}.ow-message{padding:16px 0;border-bottom:1px solid var(--line)}.ow-message h3{font-size:14px}.ow-message pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.6}.ow-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+@media(max-width:760px){.ow-screen{height:calc(100dvh - 155px)}.ow-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ow-money{grid-template-columns:1fr;gap:10px}.ow-number{font-size:27px}.ow-modal{padding:16px}.ow-card{padding:16px}}
+.ow-screen .hint{font-family:var(--sans);background:none;padding:0;max-width:none;letter-spacing:0;line-height:1.5}
+@media(min-width:761px){
+  .reports,.leads-screen{height:calc(100dvh - 104px);min-height:0;display:flex;flex-direction:column;padding-bottom:16px}
+  .reports>.hero,.leads-screen>.hero,.leads-screen>.tabs{flex-shrink:0}
+  .reports .rep-body{flex:1;min-height:0;overflow:auto}
+  .leads-screen>.leads{flex:1;min-height:0;align-items:stretch}
+  .leads-screen .leads>.side{min-height:0;overflow:auto}
+  .leads-screen .leads>div{min-height:0}
+  .leads-screen section[aria-label="Leads"]{display:flex;flex-direction:column;flex:1;min-height:0}
+  .leads-screen .tablewrap{flex:1;min-height:0;overflow:auto}
+}
+a.brand{text-decoration:none;color:var(--ink)}
+a.brand:hover b{color:var(--green)}
+/* Phone: the brand is a link now, so it needs a full tap target (44px). */
+@media (max-width:480px){a.brand{display:inline-flex;align-items:center;min-height:44px}}
+/* Seven menu items with « Outreach » and « Onboarding » need the room: the address under the brand goes below 1100px, as it already does on the phone. */
+@media (max-width:1100px){.brand i{display:none}}
+.ow-db-tabs{display:flex;gap:8px;flex-shrink:0;margin-top:10px}
+.ow-db-tabs [aria-current="page"]{background:var(--green-soft);color:var(--green-deep)}
+
+/* Keep one scrolling content region; form fields retain their own native editing. */
+.ow-body .ow-review {
+  max-height: none;
+  overflow: visible;
+}
+.ow-review-dialog,
+.ow-verification-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+.ow-review-dialog > h2,
+.ow-verification-dialog > h2 {
+  flex: 0 0 auto;
+  margin: 0;
+}
+.ow-review-body,
+.ow-verification-dialog > .ow-verification {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.ow-review-body > * {
+  flex-shrink: 0;
+}
+.ow-review-dialog > .ow-actions,
+.ow-verification-dialog > button {
+  flex: 0 0 auto;
+}
+.ow-message h3,
+.ow-message b,
+.ow-fingerprint,
+.home-reply {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.ow-verification .ow-stats {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-block: 12px;
+}
+.ow-verification .ow-stats h3 {
+  margin: 0;
+  font-size: 13px;
+}
+.ow-verification .ow-stats .ow-card {
+  padding: 14px;
+}
+.home-replies {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.home-replies h3,
+.home-replies p {
+  margin: 0;
+}
+.home-replies h3 {
+  font-size: 14px;
+}
+.home-reply {
+  padding-block: 10px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.home-reply .ow-actions {
+  margin-top: 8px;
+  gap: 6px;
+}
+@media (max-width: 760px) {
+  .ow-verification .ow-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.ow-modal .hint {
+  font-family: var(--sans);
+  background: none;
+  padding: 0;
+  max-width: none;
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+@media (max-width: 760px) {
+  .modal.ow-modal {
+    width: 100%;
+    max-width: none;
+    min-height: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+  body:has(.ow-modal) > .toast {
+    bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* One screen (NIRMATA U1, 19 Nov): the page never scrolls; each view's main
+   card takes the room that is left and only its list scrolls. */
+.ow-body{display:flex;flex-direction:column;overflow:hidden}
+.ow-view{flex:1;min-height:0}
+.ow-head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px}
+.ow-head h2{margin:0}
+.ow-fill{flex:1;min-height:0;display:flex;flex-direction:column}
+.ow-fill .ow-list{flex:1;min-height:0;max-height:none;overflow:auto}
+.ow-tiles{flex:0 0 auto;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.ow-tile{display:flex;flex-direction:column;justify-content:space-between;gap:6px;margin:0;padding:14px 16px;min-width:0}
+.ow-tile-label{font-size:12px;color:var(--muted)}
+.ow-tile .ow-number{font-size:26px;line-height:1.1;overflow-wrap:anywhere}
+.ow-planner{flex:1;min-height:0;display:grid;grid-template-columns:minmax(260px,320px) minmax(0,1fr);gap:16px}
+.ow-side{display:flex;flex-direction:column;gap:16px;min-height:0;overflow:auto}
+.ow-side .ow-field{margin-bottom:0}
+.ow-sender{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;min-width:0}
+.ow-sender span{min-width:0;overflow-wrap:anywhere}
+.ow-draft+.ow-draft{margin-top:16px}
+.ow-draft-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding-bottom:8px;border-bottom:1px solid var(--line-soft)}
+.ow-draft-head .ow-actions{margin-top:0}
+.ow-list .row .who small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ow-head .btn,.ow-actions .btn,.ow-sender .btn,.ow-list>.btn,.ow-side .btn{min-height:44px}
+@media(max-width:1100px){.ow-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){
+  .ow-tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .ow-tile{padding:10px 12px}.ow-tile .ow-number{font-size:20px}.ow-tile-label{font-size:11px}
+  .ow-planner{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}
+  /* Phone: the draft gets the room. Building is one compact card; senders are set on the Mac. */
+  .ow-side>.ow-card.ow-senders{display:none}
+  .ow-planner>.ow-fill>.ow-head{display:none}
+  .ow-side{overflow:visible}
+  .ow-side>.ow-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:12px}
+  .ow-side>.ow-card>.ow-head{display:none}
+  .ow-side>.ow-card>select{grid-column:1/-1}
+  .ow-side .ow-field>span{display:none}
+}
+/* Home: a reply is one line (name, state, actions); its summary, if any, under it. */
+/* Name and state across the full width, then the actions on their own line (NIRMATA S3, 20 Nov). */
+.home-reply{display:flex;flex-direction:column;gap:6px;padding-block:8px}
+.home-reply>p{font-size:13px;color:var(--ink-2)}
+.home-reply .ow-actions{margin-top:2px;flex-wrap:wrap}
+.home-reply-who{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:8px;row-gap:2px;min-width:0}
+.home-reply-who small{font-size:12px;color:var(--muted)}
+.home-reply:last-child{border-bottom:0}
+
+/* Projects on a desktop: the title stays, the cards scroll (one screen, like the phone). */
+@media(min-width:761px){
+  #main>.page-frame.projects-list{display:flex;flex-direction:column;height:calc(100dvh - 104px);min-height:0}
+  .page-frame.projects-list>.page-body{display:block;flex:1;min-height:0;overflow:auto;padding-bottom:16px}
+}
+
+/* The assistant: a round button bottom right, and its panel above it. It never
+   makes the page scroll (fixed) and keeps clear of the phone bar. */
+/* The assistant sits in the header, beside « Mac online »: it never floats over a page (NIRMATA S2, 20 Nov). */
+.as-fab{flex:0 0 auto;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--green);font-size:17px;line-height:1;cursor:pointer}
+.as-fab:disabled{opacity:.45;cursor:default}
+.as-panel{position:fixed;right:24px;top:84px;z-index:41;width:min(380px,calc(100vw - 32px));max-height:min(60vh,520px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:10px}
+.as-panel[hidden]{display:none}
+.as-form{display:flex;gap:8px;align-items:center}.as-form .text-input{flex:1;min-width:0;min-height:44px}
+.as-mic{flex:none;min-width:56px;height:44px;border-radius:22px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:13px;cursor:pointer}
+.as-mic.is-on{border-color:var(--green);color:var(--green)}.as-mic:disabled{opacity:.6;cursor:default}.as-mic[hidden]{display:none}
+.as-answer{margin:0;font-size:14px;line-height:1.5}
+.as-tray{display:flex;flex-direction:column;gap:6px}
+.as-head{display:flex;align-items:center;gap:8px}.as-head b{flex:1}.as-head .btn{min-height:44px}
+.as-close{width:44px;height:44px;border:0;background:none;color:var(--muted);font-size:16px;cursor:pointer}
+.as-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding-block:6px;border-bottom:1px solid var(--line-soft)}
+.as-row:last-child{border-bottom:0}.as-row .btn{min-height:44px}
+.as-who{display:flex;flex-direction:column;min-width:0}.as-who b{overflow-wrap:anywhere}.as-who small{font-size:12px;color:var(--muted)}
+.as-actions{display:flex;flex-wrap:wrap;gap:8px}.as-actions .btn{min-height:44px}
+.as-meta{margin:0;font-size:12px;color:var(--muted)}
+/* Phone: no assistant in the header; « More » names it (it needs the Mac). */
+@media(max-width:760px){.topbar-end .as-fab{display:none}}
+/* Whose turn + freshness (Codex follow-ups, 20 Nov): quiet lines, no new colours. */
+.home-replies .home-replies-fresh,.home-replies .home-replies-waiting,.home-replies .home-replies-note{font-family:var(--sans);font-size:12px;line-height:1.45;color:var(--muted)}
+.home-replies .home-replies-fresh.is-failed,.home-replies .home-replies-fresh.is-stale{color:var(--ink)}
+.ow-sender.is-stopped span{font-weight:600}
+/* 1001–1100 px: the header has the ✦ now; « Mac online » keeps its dot and title, the words step aside (as on phones). */
+@media(min-width:1001px) and (max-width:1100px){#macbtn .mac-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}#macbtn{min-width:40px;justify-content:center;padding-inline:0}}
+/* « Needs your attention »: the row, and Andy's « Interested » beside it (20 Nov). */
+.ow-attn{display:flex;align-items:center;gap:8px}.ow-attn .row{flex:1;min-width:0}.ow-attn > .btn{flex:none}
+.ow-num{flex:none;min-width:56px;font-family:var(--mono);font-size:14px;font-weight:500;color:var(--ink);letter-spacing:.02em}
+.ow-list .row:has(> .ow-num){grid-template-columns:auto auto 1fr auto}
+/* The « Ask or tell HQ » window (⌥Space): the panel fills it, nothing else on the page. */
+body.ask-window{margin:0;min-height:100vh;background:var(--card)}
+.as-panel.as-standalone{position:static;inset:auto;width:auto;max-height:none;min-height:100vh;border:0;border-radius:0;box-shadow:none;padding-top:36px}
+body.ask-window > :not(.as-panel):not(.toast):not(.scrim):not(script){display:none !important}
+/* Phone: the date goes under the name, so number + name + « Interested » fit (21 Nov: the name was squeezed to one letter). */
+@media (max-width: 480px) {
+  .ow-list .row:has(> .ow-num) { grid-template-columns: auto auto minmax(0, 1fr); row-gap: 2px; }
+  .ow-list .row:has(> .ow-num) > .who { grid-column: 3; }
+  .ow-list .row:has(> .ow-num) > .when { grid-column: 3; grid-row: 2; text-align: left; white-space: normal; }
+  .ow-num { min-width: 0; }
+}

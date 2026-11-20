@@ -1,0 +1,8 @@
+{
+  "name": "hq-assistant-helper",
+  "private": true,
+  "type": "module",
+  "description": "Mac-only helper for the HQ assistant: holds Andy's key, talks to the Claude API. Never deployed.",
+  "scripts": { "start": "node helper.mjs" },
+  "dependencies": { "@anthropic-ai/sdk": "1.10.0" }
+}

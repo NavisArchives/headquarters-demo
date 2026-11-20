@@ -1,0 +1,31 @@
+{
+  "name": "hq",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "validate": "node scripts/validate.mjs && node scripts/database-smoke.mjs",
+    "deploy": "npm run validate && npx vitest run && npm run gates && npx wrangler deploy",
+    "release": "node scripts/release.mjs",
+    "gates": "node scripts/gates.mjs",
+    "dev": "node scripts/dev.mjs",
+    "db:migrate:local": "wrangler d1 migrations apply hq --local",
+    "backup": "node scripts/backup-d1.mjs",
+    "backup:check": "node scripts/backup-d1.mjs check",
+    "db:migrate:remote": "node scripts/backup-d1.mjs --reason pre-migration && wrangler d1 migrations apply hq --remote",
+    "db:smoke": "node scripts/database-smoke.mjs",
+    "test:print": "node scripts/print-pages.mjs",
+    "check:overlap": "node scripts/overlap-check.mjs",
+    "test:pdf": "node scripts/invoice-pdf.mjs",
+    "check:visual": "node scripts/visual-sweep.mjs",
+    "shots": "node scripts/site-shots.mjs",
+    "demo": "wrangler d1 migrations apply hq-demo --local --config wrangler.demo.jsonc --persist-to .wrangler/demo && wrangler d1 execute hq-demo --local --config wrangler.demo.jsonc --persist-to .wrangler/demo --file scripts/seed-demo.sql && X_LOCAL_OBSERVABILITY=false wrangler dev --local --config wrangler.demo.jsonc --persist-to .wrangler/demo --env-file demo.vars --port 8790"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "axe-core": "4.10.2",
+    "vitest": "^5.0.1",
+    "wrangler": "^4.135.0"
+  }
+}

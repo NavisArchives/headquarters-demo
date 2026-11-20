@@ -1,0 +1,130 @@
+/* The morning briefing: a layer over the Overview, HQ's own tokens, and the
+   Realis neon (white tubes, a soft cool glow, lit once) for the greeting. */
+
+html.brf-open { overflow: hidden; }
+.brf .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.brf {
+  position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 28px;
+  background: rgba(4, 7, 6, .62); transition: background-color .6s ease;
+  -webkit-backdrop-filter: blur(16px) saturate(.85); backdrop-filter: blur(16px) saturate(.85);
+  color: var(--ink);
+}
+/* The greeting (on near-black, like the sign) and the briefing share one cell, both centred. */
+.brf.is-intro { background: rgba(3, 4, 5, .9); }
+.brf > .brf-intro, .brf > .brf-shell { grid-area: 1 / 1; }
+.brf-shell { display: grid; grid-template-columns: 200px minmax(0, 1040px); justify-content: center; align-items: center; gap: 28px; width: 100%; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .brf { background: rgba(4, 7, 6, .9); } }
+
+/* ---- 1. the neon greeting ---- */
+.brf-intro { display: grid; justify-items: center; gap: 18px; text-align: center; cursor: pointer; transition: opacity .5s ease, transform .5s ease; }
+.brf.is-panel .brf-intro { visibility: hidden; transition: opacity .5s ease, transform .5s ease, visibility 0s linear .5s; opacity: 0; transform: translateY(-24px) scale(.96); pointer-events: none; }
+.brf-neon { margin: 0; display: grid; justify-items: center; gap: .18em; font-family: var(--mono); font-weight: 400; line-height: 1; letter-spacing: .1em; }
+.brf-neon__line { display: block; font-size: clamp(26px, 4.6vw, 64px); white-space: nowrap; }
+/* The name is the big sign, the greeting the line above it (as « REALIS STUDIO. » over its tagline, inverted). */
+.brf-neon__line.is-name { font-size: clamp(64px, 15vw, 196px); letter-spacing: .06em; }
+.brf-neon__ch, .brf-neon__gap { display: inline-block; }
+/* A neon tube: first the glass, off (grey, no light); then a white-hot core, a tight glow, a wide soft halo and a faint far one. */
+.brf-neon__ch {
+  color: #3b3d40; text-shadow: none;
+  animation: brf-light 1.4s steps(1, end) var(--d, 0ms) forwards;
+}
+@keyframes brf-light {
+  0% { color: #3b3d40; text-shadow: none; }
+  10%, 24%, 40%, 100% { color: #ffffff; text-shadow:
+    0 0 1px #fff, 0 0 3px #fff, 0 0 7px rgba(255, 255, 255, .95), 0 0 16px rgba(235, 242, 255, .75),
+    0 0 34px rgba(215, 228, 255, .55), 0 0 70px rgba(195, 212, 255, .35), 0 0 130px rgba(185, 205, 255, .2); }
+  16%, 30% { color: #5a5d61; text-shadow: 0 0 4px rgba(255, 255, 255, .15); }
+}
+.brf-intro__date { margin: 0; font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: rgba(230, 238, 232, .62); opacity: 0; animation: brf-fade .8s ease 1.4s forwards; }
+@keyframes brf-fade { to { opacity: 1; } }
+
+/* ---- 2. the briefing ---- */
+.brf-panel {
+  width: 100%; height: min(720px, calc(100dvh - 56px)); display: grid; grid-template-rows: auto minmax(0, 1fr);
+  background: color-mix(in srgb, var(--card) 94%, transparent); border: 1px solid var(--line); border-radius: 26px;
+  box-shadow: 0 40px 120px rgba(0, 0, 0, .55); opacity: 0; visibility: hidden; transform: translateY(18px); pointer-events: none;
+  transition: opacity .45s ease .1s, transform .45s ease .1s;
+}
+.brf.is-panel .brf-panel { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+.brf-head { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border-bottom: 1px solid var(--line); }
+.brf-head__mark { margin: 0 auto 0 0; min-width: 0; }
+.brf-head__neon {
+  font-family: var(--mono); font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: #fbfdff; white-space: nowrap;
+  text-shadow: 0 0 4px rgba(255, 255, 255, .7), 0 0 12px rgba(200, 215, 255, .45);
+}
+.brf-head__step { font-family: var(--mono); font-size: 13px; color: var(--muted); white-space: nowrap; }
+.brf-x { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: none; color: var(--ink); font: inherit; font-size: 16px; cursor: pointer; }
+.brf-x:hover { border-color: var(--green); }
+
+.brf-body { display: grid; grid-template-columns: minmax(0, 1fr); min-height: 0; }
+/* The findings' names on the blurred backdrop, left of the card: just the names. */
+.brf-names { display: grid; align-content: center; gap: 6px; opacity: 0; visibility: hidden; transition: opacity .45s ease .2s; }
+.brf.is-panel .brf-names { opacity: 1; visibility: visible; }
+.brf-name { text-align: left; font: inherit; font-size: 17px; color: rgba(230, 238, 232, .55); background: none; border: 0; border-radius: 12px; padding: 10px 14px; min-height: 44px; cursor: pointer; transition: color .2s ease; }
+.brf-name:hover { color: var(--ink); }
+.brf-name[aria-current="step"] { color: #fff; text-shadow: 0 0 10px rgba(225, 235, 255, .55); box-shadow: inset 2px 0 0 var(--green); }
+.brf-right { display: grid; grid-template-rows: minmax(0, 1fr) auto; min-height: 0; }
+.brf-stage { min-height: 0; overflow-y: auto; padding: 26px 30px; touch-action: pan-y;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent); }
+.brf-card { display: grid; gap: 14px; align-content: start; animation: brf-card .35s ease; }
+@keyframes brf-card { from { opacity: 0; transform: translateX(10px); } }
+.brf-card__eyebrow { margin: 0; font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--green); }
+.brf-card__title { margin: 0; font-size: clamp(26px, 3vw, 38px); font-weight: 400; letter-spacing: -.02em; line-height: 1.1; }
+.brf-card__summary { margin: 0; color: var(--ink-2, var(--ink)); font-size: 16px; line-height: 1.5; max-width: 62ch; }
+.brf-card__note { margin: 0; color: var(--muted); font-size: 14px; }
+.brf-counts { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+.brf-count { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--ground); }
+.brf-count b { font-size: 26px; font-weight: 500; letter-spacing: -.02em; }
+.brf-count span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-family: var(--mono); }
+.brf-lists { display: grid; gap: 4px; }
+.brf-list { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.brf-list__name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.brf-list__n { color: var(--muted); white-space: nowrap; font-family: var(--mono); font-size: 12.5px; }
+.brf-items { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.brf-item { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--ground); min-height: 52px; }
+.brf-item__text { display: grid; gap: 2px; min-width: 0; }
+.brf-item__label { color: var(--ink); font-weight: 500; text-decoration: none; overflow-wrap: anywhere; }
+a.brf-item__label:hover { color: var(--green); }
+/* The whole row is the link: a finger-sized target. */
+a.brf-item__label::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+.brf-item:has(a:hover) { border-color: var(--green); }
+.brf-item__detail { color: var(--muted); font-size: 13.5px; overflow-wrap: anywhere; }
+.brf-item__meta { flex: none; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.brf-card__all { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; color: var(--green); text-decoration: none; font-size: 14.5px; }
+.brf-foot { display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 14px 22px; border-top: 1px solid var(--line); }
+.brf-foot__all { margin-right: auto; min-width: 0; }
+.brf-foot__all:empty { display: none; }
+.brf-foot .btn { min-height: 44px; padding: 0 20px; }
+
+/* ---- the phone: names become a row of chips on top; the card fills the rest ---- */
+@media (max-width: 760px) {
+  /* A thumb-sized target on a phone (the whole card stays clickable through ::after). */
+  a.brf-item__label { display: inline-flex; align-items: center; min-height: 44px; }
+  .brf { padding: 0; }
+  .brf-shell { grid-template-columns: minmax(0, 1fr); width: 100%; height: 100dvh; }
+  .brf-panel { width: 100%; height: 100dvh; border-radius: 0; border: 0; }
+  .brf-head { padding: max(12px, env(safe-area-inset-top)) 16px 12px; }
+  .brf-head__neon { font-size: 12.5px; }
+  .brf-body { grid-template-rows: auto minmax(0, 1fr); }
+  .brf-names { display: flex; gap: 6px; padding: 10px 16px; border-bottom: 1px solid var(--line); overflow-x: auto; overflow-y: hidden; scrollbar-width: none; opacity: 1; visibility: visible; }
+  .brf-names::-webkit-scrollbar { display: none; }
+  .brf-name { flex: none; white-space: nowrap; border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-size: 15px; color: var(--muted); }
+  .brf-name[aria-current="step"] { box-shadow: none; text-shadow: none; color: var(--ink); border-color: var(--green); }
+  .brf-stage { padding: 20px 16px; }
+  /* Nothing wider than the phone: 2 × 2 tiles, list rows wrap with their counts under the name. */
+  .brf-counts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .brf-list { flex-direction: column; gap: 2px; }
+  .brf-list__name { white-space: normal; }
+  .brf-item { align-items: flex-start; }
+  .brf-foot { padding: 12px 16px max(12px, env(safe-area-inset-bottom)); }
+  .brf-foot { flex-wrap: wrap; }
+  .brf-foot__all { flex: 1 0 100%; margin: 0; }
+  .brf-foot .btn { flex: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brf-neon__ch { animation: none; color: #fff; text-shadow: 0 0 2px #fff, 0 0 8px rgba(255, 255, 255, .9), 0 0 24px rgba(215, 228, 255, .5), 0 0 60px rgba(195, 212, 255, .3); }
+  .brf-intro__date { animation: none; opacity: 1; }
+  .brf, .brf-panel, .brf-intro, .brf-card, .brf-names { transition: none; animation: none; }
+}

@@ -1,0 +1,10 @@
+Headquarters — a clean snapshot of a private repository, shared for review.
+
+Copyright (c) 2026 Andy Huizenga. All rights reserved — shared for review only.
+No licence is granted to copy, modify or redistribute this code.
+
+All people, companies, clients, invoices, leads and figures in this repository
+(including scripts/seed-demo.sql and the test fixtures) are fictional demo data.
+
+Third-party fonts in src/public/assets/fonts/ (Instrument Sans, IBM Plex Mono,
+JetBrains Mono) are used under the SIL Open Font License 1.1.

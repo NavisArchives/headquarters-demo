@@ -1,0 +1,262 @@
+/* The Missions screen: proper mission cards in three columns.
+   Injected by screens/missions.js (the replies.css pattern) so index.html
+   stays the layout agents' file. Everything is namespaced under .ms-, and
+   every colour is one of the shell's own tokens — the reference this was
+   built from is another product's screen, so its structure is borrowed and
+   none of its colours are. */
+
+/* ---------------------------------------------------------- the head --- */
+
+.ms-head { display: flex; align-items: flex-start; gap: 28px; flex-wrap: wrap; padding-block: 26px 10px; }
+.ms-head h1 {
+  margin: 0; font-size: clamp(34px, 6vw, 56px); font-weight: 400;
+  letter-spacing: -.04em; line-height: 1.02;
+}
+.ms-head .ms-sub { margin: 10px 0 0; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+/* The buttons sit on the meter's own line, not centred against eyebrow-plus-meter. */
+.ms-head-acts { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-left: auto; }
+.ms-head-acts .btn { min-height: 40px; }
+@media (max-width: 760px) { .ms-head-acts { margin-left: 0; flex: 1 1 100%; } }
+
+.ms-month { min-width: 0; }
+.ms-month .ms-eyebrow { margin: 0 0 6px; }
+.ms-meter {
+  position: relative; display: flex; align-items: center;
+  width: min(300px, 62vw); min-height: 40px; padding: 0 18px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--soft-2);
+  overflow: hidden;
+}
+.ms-meter i {
+  position: absolute; left: 0; top: 0; bottom: 0; display: block;
+  background: color-mix(in srgb, var(--green) 20%, transparent);
+  border-right: 1px solid var(--green);
+}
+.ms-meter span { position: relative; font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+/* ------------------------------------------------------- filter pills --- */
+
+.ms-filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 var(--gap-lg); }
+.ms-filter {
+  font: inherit; font-family: var(--mono); font-size: var(--micro);
+  letter-spacing: .13em; text-transform: uppercase;
+  min-height: 40px; padding: 0 16px; border-radius: 999px; cursor: pointer;
+  background: transparent; border: 1px solid var(--line); color: var(--muted);
+}
+.ms-filter:hover { color: var(--ink); border-color: var(--muted); }
+.ms-filter[aria-pressed="true"] { background: var(--green-soft); border-color: var(--green); color: var(--green); }
+
+/* --------------------------------------------------------- the columns --- */
+
+.ms-cols { display: grid; gap: var(--gap); grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
+@media (max-width: 1040px) { .ms-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) {
+  .ms-cols { grid-template-columns: 1fr; }
+  /* On a phone the thing waiting on a yes or a no comes first, then the work
+     in hand, then what is already finished. */
+  .ms-col-proposed { order: 1; }
+  .ms-col-open     { order: 2; }
+  .ms-col-done     { order: 3; }
+}
+
+.ms-col { display: grid; gap: var(--gap); align-content: start; min-width: 0; }
+.ms-eyebrow {
+  font-family: var(--mono); font-size: var(--micro); letter-spacing: .13em;
+  text-transform: uppercase; color: var(--muted); margin: 0;
+}
+.ms-empty { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+
+/* ------------------------------------------------------------ a card --- */
+
+.ms-card {
+  display: grid; gap: 12px; min-width: 0; padding: 18px;
+  background: var(--card); border: 1px solid var(--line-soft);
+  border-radius: var(--r); color: var(--ink);
+}
+/* The accent border is the one thing that says "this one is running". */
+.ms-card.is-doing { border-color: var(--green); }
+.ms-card.is-blocked { border-color: var(--red); }
+
+.ms-title { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -.02em; line-height: 1.25; overflow-wrap: anywhere; }
+.ms-desc { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); overflow-wrap: anywhere; }
+
+.ms-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ms-chip {
+  position: relative; display: inline-flex; align-items: center; min-height: 28px;
+  font-family: var(--mono); font-size: var(--micro); letter-spacing: .04em;
+  padding: 0 10px; border-radius: 8px; text-decoration: none;
+  background: var(--soft-2); border: 1px solid var(--line-soft); color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+a.ms-chip { color: var(--green); }
+a.ms-chip:hover { border-color: var(--green); }
+.ms-chip.ms-warn { color: var(--amber); background: var(--amber-soft); border-color: transparent; }
+
+/* ---- who it belongs to, and the way in to the editor ---- */
+
+.ms-who {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding-top: 12px; border-top: 1px dashed var(--line);
+}
+.ms-av {
+  flex: none; width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center; font-size: var(--micro); font-weight: 500;
+  background: var(--soft); color: var(--ink-2); border: 1px solid var(--line);
+}
+.ms-whotext { font-size: 13px; color: var(--ink-2); min-width: 0; overflow-wrap: anywhere; }
+.ms-change {
+  font: inherit; font-size: 13px; margin-left: auto; padding: 0; cursor: pointer;
+  background: none; border: 0; color: var(--muted); text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ms-change:hover { color: var(--green); }
+
+/* ---- what they wrote ---- */
+
+.ms-card > details { font-size: 13px; line-height: 1.6; }
+.ms-card > details > summary { cursor: pointer; font-size: var(--micro); color: var(--muted); }
+.ms-card > details > p {
+  margin: 8px 0 0; padding: 10px 12px; border-radius: 10px;
+  background: var(--soft-2); white-space: pre-wrap; color: var(--ink-2);
+}
+
+/* ---- the actions ---- */
+
+.ms-acts { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ms-go { flex: 1 1 180px; min-height: 44px; font-size: 14px; }
+.ms-second { min-height: 40px; }
+.ms-text {
+  font: inherit; font-size: 13px; min-height: 40px; padding: 0 6px; cursor: pointer;
+  background: none; border: 0; color: var(--muted);
+}
+.ms-text:hover { color: var(--red); }
+
+/* ---- the done card: the one light surface on the screen ---- */
+
+.ms-card.is-done { background: var(--ink); border-color: var(--ink); color: var(--ground); }
+.ms-card.is-done .ms-desc,
+.ms-card.is-done .ms-whotext { color: #33443A; }
+.ms-card.is-done .ms-chip { background: rgba(16, 22, 19, .06); border-color: rgba(16, 22, 19, .14); color: #2A3A31; }
+.ms-card.is-done .ms-who { border-top-color: rgba(16, 22, 19, .14); }
+.ms-card.is-done .ms-av { background: rgba(16, 22, 19, .07); border-color: rgba(16, 22, 19, .14); color: #2A3A31; }
+.ms-card.is-done .ms-change { color: #46584D; }
+.ms-card.is-done .ms-change:hover { color: var(--ground); }
+.ms-card.is-done .ms-text { color: #46584D; }
+.ms-card.is-done .ms-text:hover { color: #7A2620; }
+.ms-card.is-done :focus-visible { outline-color: var(--ground); }
+.ms-head-done { display: flex; align-items: flex-start; gap: 10px; }
+.ms-check {
+  flex: none; width: 26px; height: 26px; border-radius: 50%; margin-top: 1px;
+  display: grid; place-items: center; font-size: 13px;
+  background: var(--green); color: var(--on-green);
+}
+.ms-older { justify-self: start; }
+
+/* ------------------------------------------------------- the editor --- */
+
+.ms-edit { display: grid; gap: 12px; }
+.ms-field { display: grid; gap: 6px; min-width: 0; }
+.ms-field > span {
+  font-family: var(--mono); font-size: var(--micro); letter-spacing: .13em;
+  text-transform: uppercase; color: var(--muted);
+}
+.ms-input {
+  font: inherit; font-size: 13.5px; min-height: 40px; width: 100%; min-width: 0;
+  box-sizing: border-box; padding: 8px 12px; border-radius: 10px;
+  color: var(--ink); background: var(--soft-2); border: 1px solid var(--line);
+}
+.ms-input:focus-visible { outline: none; border-color: var(--green); }
+.ms-edit-acts { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.ms-edit-acts .btn { min-height: 40px; }
+.ms-card.is-editing { border-color: var(--green); }
+
+.ms-err { margin: 0; font-size: 12.5px; color: var(--red); line-height: 1.5; }
+.ms-card.is-done .ms-err { color: #8E2F27; }
+
+/* A chip that is a link is a tap target on a phone: it keeps its 28px box and
+   carries the missing hit area around itself. */
+@media (max-width: 480px) {
+  a.ms-chip::after { content: ""; position: absolute; inset: -7px 0; }
+  .ms-meter { width: 100%; }
+  /* Two controls that are a line of text on a desktop take their 40px of
+     finger on a phone, the way the money links do. */
+  .ms-change { display: inline-flex; align-items: center; min-height: 40px; }
+  /* Padding rather than a min-height: it keeps the disclosure marker, which
+     a `display: flex` summary loses. */
+  .ms-card > details > summary { padding-block: 11px; }
+}
+
+/* "Scan replies", at the head of the proposals column. */
+.ms-scan { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ms-scan .btn { min-height: 40px; }
+
+/* The title is the way into the editor: one person uses this, so there is no
+   assignee row to hang a Change button off. */
+.ms-titlebtn {
+  font: inherit; color: inherit; background: none; border: 0; padding: 0;
+  text-align: left; cursor: pointer; letter-spacing: inherit;
+}
+.ms-titlebtn:hover { color: var(--green); }
+/* On a phone the title is a tap target like any other: at least 40px, even
+   when it fits on one line (a one-line title was 24px). */
+@media (max-width: 480px) {
+  .ms-titlebtn { min-height: 40px; display: flex; align-items: center; }
+}
+.ms-card.is-done .ms-titlebtn:hover { color: var(--ground); }
+/* Each column's card list scrolls on its own (fillViewport sets its height on a
+   desktop), under a title that stays put, and without a visible scrollbar. The
+   2px padding keeps card borders and focus rings from being clipped. */
+.ms-list {
+  display: grid; gap: var(--gap); align-content: start; min-width: 0;
+  padding: 2px; margin: -2px; scrollbar-width: none;
+}
+.ms-list::-webkit-scrollbar { display: none; }
+
+/* ------------------------------------------------- the phone (P6, 14 Nov) ---
+   The page never scrolls; one list does (phone.css draws the frame). One row
+   of header, the three columns as segments whose counts are their lists, and
+   compact cards: title, chips, the next step; « Details » unfolds the rest. */
+.ms-seg, .ms-more, .ms-screen .lbl-short { display: none; }
+@media (max-width: 760px) {
+  .ms-screen > .grid { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+  .ms-head { flex-wrap: nowrap; align-items: center; gap: 10px; padding-block: 6px 0; }
+  .ms-head h1 { font-size: 30px; }
+  .ms-head .ms-sub, .ms-head .ms-month { display: none; }
+  .ms-head-acts { margin-left: auto; flex: 0 0 auto; flex-wrap: nowrap; gap: 8px; }
+  .ms-screen .lbl-long { display: none; }
+  .ms-screen .lbl-short { display: inline; }
+
+  .ms-seg { display: flex; flex-wrap: nowrap; gap: 3px; margin: 0; }
+  .ms-seg .tab { flex: 1 1 0; justify-content: center; min-width: 0; white-space: nowrap; padding-inline: 8px; }
+  .ms-filters { margin: 0; }
+  .ms-screen:not([data-seg="open"]) .ms-filters { display: none; }
+
+  .ms-cols { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .ms-col { display: none; }
+  .ms-col.is-seg-on { display: flex; flex-direction: column; gap: 10px; flex: 1 1 auto; min-height: 0; }
+  .ms-col > .ms-eyebrow { display: none; }
+  /* the list ends at the screen's foot now (it runs on under the tab bar): no negative bottom margin past it */
+  .ms-list { gap: 10px; margin-bottom: 0; }
+
+  .ms-card { gap: 10px; padding: 14px; }
+  .ms-card .ms-title { font-size: 17px; }
+  .ms-card:not(.is-expanded):not(.is-editing) .ms-titlebtn {
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-align: left;
+  }
+  /* Compact: only the chips that say when, what is in the way, and for whom; the rest is in Details. */
+  .ms-card:not(.is-expanded):not(.is-editing) .ms-chip:not(.is-key) { display: none; }
+  .ms-card:not(.is-expanded):not(.is-editing) .ms-chips:not(:has(.is-key)) { display: none; }
+  .ms-card:not(.is-expanded):not(.is-editing) .ms-chip { display: inline-block; line-height: 28px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-card.is-done .ms-more { color: inherit; border-color: currentColor; opacity: .75; }
+  .ms-card.is-done:not(.is-expanded):not(.is-editing) .ms-acts { display: none; }
+  /* « Scan replies » needs the Mac (hidden); its reason would sit alone. */
+  .ms-scan { display: none; }
+  .ms-card:not(.is-expanded):not(.is-editing) :is(.ms-desc, .ms-todos, details, .ms-text, .ms-second) { display: none; }
+  .ms-acts { flex-wrap: nowrap; }
+  .ms-go { flex: 1 1 auto; }
+  .ms-card.is-expanded .ms-acts { flex-wrap: wrap; }
+  .ms-more {
+    display: inline-flex; align-items: center; flex: 0 0 auto; margin-left: auto;
+    font: inherit; font-size: 13.5px; min-height: 44px; padding: 0 10px; cursor: pointer;
+    background: none; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-2);
+  }
+}

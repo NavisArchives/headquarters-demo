@@ -1,0 +1,1204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Headquarters</title>
+<link rel="manifest" href="/manifest.webmanifest" crossorigin="use-credentials">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/hq-192.png">
+<!-- the one palette's --ground, so the installed window's chrome matches the page -->
+<meta name="theme-color" content="#101613">
+<script>
+  // The remembered palette, applied before the first paint so the page never
+  // flashes Forest on its way to Marine. The button in the top bar sets it.
+  try {
+    if (localStorage.getItem('hq-theme') === 'marine') {
+      document.documentElement.dataset.theme = 'marine';
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0B1626');
+    }
+  } catch (e) { /* private window: Forest it is */ }
+  // Safe view (safe-view.js): a client is looking. Hide HQ's chrome before the
+  // first paint, so a reload never flashes the navigation.
+  // It belongs to one tab (sessionStorage), and a questionnaire address is
+  // always safe view. The old device-wide flag is cleared once.
+  try { localStorage.removeItem('hq.safeView'); } catch (e) { /* no storage */ }
+  try {
+    if (sessionStorage.getItem('hq.safeView') || /^\/onboarding\/\d+$/.test(location.pathname)) {
+      document.documentElement.classList.add('safe-view');
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff');
+    }
+  } catch (e) { /* no storage: safe view lives in memory only */ }
+</script>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<style>
+  /* HQ has two dark palettes and nothing else: Forest (the default) and
+     Marine, the navy of the Marc Aubin editor. No light theme, no
+     prefers-color-scheme branch; the choice is a button in the top bar,
+     remembered per browser. `color-scheme: dark` tells the browser to draw
+     its own furniture (scrollbars, form controls, the date picker) to match. */
+  :root {
+    color-scheme: dark;
+
+    --ground:     #101613;
+    --card:       #18211C;
+    --soft:       #1D2922;
+    --soft-2:     #18211C;
+    --ink:        #E6EEE8;
+    --ink-2:      #B7C7BC;
+    --muted:      #8A9C90;
+    --line:       #27332B;
+    --line-soft:  #1F2A23;
+
+    --green:      #6FBF8F;
+    --green-deep: #A7DBBB;
+    --green-soft: #172E22;
+    --on-green:   #0E1611;
+
+    --amber:      #D9A741;
+    --amber-soft: #2E2510;
+    --red:        #E08A84;
+    --red-soft:   #2F1918;
+    --idle:       #8A9C90;
+    --idle-soft:  #1F2A23;
+
+    --r:          20px;
+    --r-sm:       12px;
+    --shadow:     0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+
+    /* The one vertical rhythm: every stack of cards uses --gap, every page
+       ends on --page-end. Nothing invents its own number. */
+    --gap:        16px;
+    --gap-lg:     30px;
+    --page-end:   60px;
+
+    /* Nothing is allowed to be smaller than --micro: 12px is the floor. */
+    --micro:      12px;
+
+    --sans: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  }
+
+  :root[data-theme="marine"] {
+    --ground:     #0B1626;
+    --card:       #122238;
+    --soft:       #182D48;
+    --soft-2:     #122238;
+    --ink:        #E9EFF7;
+    --ink-2:      #BCC9DC;
+    --muted:      #8A9DB8;
+    --line:       #24395A;
+    --line-soft:  #1B2E4A;
+
+    --green:      #8FC5F2;
+    --green-deep: #B9DDF9;
+    --green-soft: #15324D;
+    --on-green:   #081522;
+
+    --amber:      #E2B457;
+    --amber-soft: #33290F;
+    --red:        #E89A93;
+    --red-soft:   #3A1E22;
+    --idle:       #8A9DB8;
+    --idle-soft:  #1B2E4A;
+    --shadow:     0 1px 2px rgba(0,0,0,.45), 0 10px 30px -18px rgba(0,0,0,.85);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1240px; margin: 0 auto; padding-inline: 24px; }
+  a { color: var(--green); }
+  :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; border-radius: 6px; }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
+    background: color-mix(in srgb, var(--ground) 90%, transparent);
+    backdrop-filter: blur(12px);
+  }
+  .topbar-inner {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 18px;
+    padding-block: 14px;
+  }
+  .topbar-inner > nav.pills { justify-self: center; }
+  /* The right-hand group: the status chip and the initials, together at the end. */
+  .topbar-inner > .topbar-end { grid-column: 3; justify-self: end; display: flex; align-items: center; gap: 12px; }
+  .topbar-inner > .email-chip { grid-column: 1 / -1; }
+  .brand-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
+  .brand { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+  .brand b { font-size: 17px; font-weight: 600; letter-spacing: -.02em; }
+  .brand i {
+    font-family: var(--mono); font-size: var(--micro); font-style: normal;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+  }
+  nav.pills {
+    display: flex; gap: 2px; margin-inline: auto;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px;
+    /* On a narrow phone the six sections are wider than the screen. Let the
+       strip scroll inside itself rather than pushing the whole page sideways. */
+    max-width: 100%; overflow-x: auto; scrollbar-width: none;
+  }
+  nav.pills::-webkit-scrollbar { display: none; }
+  nav.pills button {
+    font: inherit; font-size: 13.5px; color: var(--ink-2);
+    background: none; border: 0; border-radius: 999px;
+    padding: 7px 15px; cursor: pointer; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  nav.pills button .s { display: none; }
+  /* The icons and « More » belong to the phone's bottom bar only. */
+  nav.pills button .i, nav.pills button.more { display: none; }
+  nav.pills button:hover { color: var(--ink); }
+  nav.pills button[aria-current="page"] { background: var(--green); color: var(--on-green); }
+  .chip-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    font: inherit; font-size: 13px; color: var(--ink-2);
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 999px; padding: 7px 14px; cursor: pointer;
+    text-decoration: none;
+  }
+  .chip-btn:hover { border-color: var(--green); color: var(--green); }
+  .email-chip { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%; flex: none;
+    background: var(--green-deep); color: var(--on-green);
+    display: grid; place-items: center;
+    font-size: 12.5px; font-weight: 600; letter-spacing: .02em;
+    border: 0; padding: 0; font-family: inherit; cursor: pointer;
+  }
+  /* The initials open a small menu: the palette, then sign out — the same
+     menu the Marc Aubin editor has, so the two feel like one family. */
+  .umenu { position: relative; }
+  .umenu__list {
+    position: absolute; right: 0; top: calc(100% + 8px); z-index: 30;
+    min-width: 200px; padding: 6px; display: grid; gap: 2px;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--r-sm); box-shadow: var(--shadow);
+  }
+  .umenu__list[hidden] { display: none; }
+  .umenu__who { padding: 8px 10px 10px; display: grid; gap: 2px; }
+  .umenu__who b { font-size: 13.5px; }
+  .umenu__who small { font-family: var(--mono); font-size: var(--micro); color: var(--muted); overflow-wrap: anywhere; }
+  .umenu__item {
+    font: inherit; font-size: 13.5px; text-align: left; color: var(--ink-2);
+    background: transparent; border: 0; border-radius: 8px; padding: 8px 10px; cursor: pointer;
+    text-decoration: none; display: block; width: 100%;
+  }
+  .umenu__item:hover { background: var(--soft-2); color: var(--ink); }
+  .umenu__item.is-on { color: var(--ink); font-weight: 500; }
+  .umenu__rule { border: 0; border-top: 1px solid var(--line-soft); margin: 4px 0; }
+
+  /* ---------- hero ---------- */
+  .hero { display: flex; align-items: flex-start; gap: 28px; flex-wrap: wrap; padding-block: 26px 10px; }
+  /* A hero that is itself a row of a grid hands its bottom spacing back to
+     the grid, so the header sits on the same scale as the cards below it. */
+  .grid > .hero { padding-block-end: 0; margin-bottom: calc(var(--gap-lg) - var(--gap)); }
+  .hero h1 {
+    margin: 0; font-size: clamp(30px, 5vw, 46px); font-weight: 400;
+    letter-spacing: -.035em; line-height: 1.05; text-wrap: balance;
+  }
+  .hero h1 em { font-style: italic; }
+  .hero .sub {
+    margin: 10px 0 0; font-size: 13.5px; color: var(--muted);
+    display: flex; align-items: center; gap: 9px; flex-wrap: wrap;
+  }
+  /* ---------- layout ---------- */
+  /* One stack, one gap. The room at the foot of the page is added once, by
+     the footer, instead of by every grid on the way down — which is what used
+     to put a 60px hole between two cards in the same column. */
+  /* Every column here is `minmax(0, …)`, never a bare `1fr` or the implicit
+     single-column default: a bare `fr` track's automatic minimum is its
+     content's min-content size, so one nowrap-and-scroll descendant (a
+     command chip, now) is enough to blow the whole track — and the page —
+     wider than the viewport. `minmax(0, …)` pins that minimum to zero, so
+     the track (and everything stacked in it) always fits its container. */
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--gap); }
+  .g-2 { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); }
+  .g-cards { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
+  /* A column inside a multi-column row packs its cards at the top. Without
+     this, grid's default `align-content: stretch` inflates the short
+     column's cards to match the tall one next to it, and a three-line
+     status box turns into a mostly-empty slab. */
+  .grid > .grid, .g-2 > .grid, .g-cards > .grid { align-content: start; }
+  @media (max-width: 900px) { .g-2 { grid-template-columns: minmax(0, 1fr); } }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line-soft);
+    border-radius: var(--r); padding: 20px;
+  }
+  .card.soft { background: var(--soft); border-color: transparent; }
+  /* Screens build cards out of plain <h2>/<h3>, which arrive with the
+     browser's own em-based margins and punch a hole in the card's padding. */
+  .card > h2, .panel > h2 { margin: 0 0 14px; font-size: 21px; font-weight: 600; letter-spacing: -.02em; }
+  .card > h2:last-child, .panel > h2:last-child { margin-bottom: 0; }
+  .card h3 { margin: 0; }
+  .panel {
+    background: var(--green-soft); color: var(--ink);
+    border-radius: var(--r); padding: 20px;
+  }
+  .eyebrow {
+    font-family: var(--mono); font-size: var(--micro); letter-spacing: .13em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 14px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  h2.section {
+    margin: var(--gap-lg) 0 14px; font-size: 13px; font-weight: 500;
+    font-family: var(--mono); letter-spacing: .13em; text-transform: uppercase; color: var(--muted);
+  }
+
+  /* ---------- attention rows ---------- */
+  .rows { display: grid; gap: 2px; }
+  .row {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 13px;
+    align-items: center; padding: 11px 12px; border-radius: var(--r-sm);
+    background: transparent; border: 0; width: 100%; text-align: left;
+    font: inherit; color: inherit; cursor: pointer;
+  }
+  .row:hover { background: var(--soft-2); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  .d-ok { background: var(--green); } .d-warn { background: var(--amber); }
+  .d-bad { background: var(--red); } .d-idle { background: var(--idle); }
+  .row .who { font-size: 14px; }
+  .row .who small { display: block; color: var(--muted); font-size: 12.5px; margin-top: 1px; }
+  .row .when { font-family: var(--mono); font-size: var(--micro); color: var(--muted); white-space: nowrap; }
+
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: var(--micro); letter-spacing: .06em; text-transform: uppercase;
+    border-radius: 999px; padding: 3px 9px; white-space: nowrap;
+  }
+  .t-live { color: var(--green); background: var(--green-soft); }
+  .t-run  { color: var(--green); background: var(--green-soft); }
+  .t-warn { color: var(--amber); background: var(--amber-soft); }
+  .t-bad  { color: var(--red); background: var(--red-soft); }
+  .t-idle { color: var(--idle); background: var(--idle-soft); }
+  .t-none { color: var(--muted); background: transparent; border: 1px dashed var(--line); }
+
+  /* ---------- project cards ---------- */
+  .pcard {
+    display: flex; flex-direction: column; gap: 11px;
+    background: var(--card); border: 1px solid var(--line-soft);
+    border-radius: var(--r); padding: 18px;
+    text-align: left; font: inherit; color: inherit; cursor: pointer;
+    transition: border-color .12s, transform .12s;
+  }
+  .pcard:hover, .pcard:focus-visible { border-color: var(--green); transform: translateY(-1px); }
+  .pcard.empty { border-style: dashed; background: transparent; }
+  .pcard .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .pcard h3 { margin: 0; font-size: 15.5px; font-weight: 600; letter-spacing: -.015em; }
+  .pcard p { margin: 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.45; }
+  .meta { font-family: var(--mono); font-size: var(--micro); color: var(--muted); line-height: 1.5; }
+  .links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line-soft); }
+  .lk {
+    font-family: var(--mono); font-size: var(--micro); text-decoration: none;
+    color: var(--green); background: var(--green-soft);
+    border-radius: 8px; padding: 5px 10px; border: 0; cursor: pointer;
+    display: inline-block;
+  }
+  .lk:hover { background: var(--green); color: var(--on-green); }
+  .lk.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+  .lk.ghost:hover { color: var(--ink); border-color: var(--muted); background: transparent; }
+
+  /* ---------- missions ---------- */
+  .mission {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 12px;
+    align-items: start; padding: 12px; border-radius: var(--r-sm);
+  }
+  .mission:hover { background: var(--card); }
+  .tick {
+    width: 19px; height: 19px; border-radius: 50%; flex: none; margin-top: 1px;
+    border: 1.5px solid var(--line); background: none; cursor: pointer;
+    display: grid; place-items: center; color: transparent; font-size: var(--micro);
+  }
+  .tick.done { background: var(--green); border-color: var(--green); color: var(--on-green); }
+  .tick.doing { border-color: var(--amber); box-shadow: inset 0 0 0 3.5px var(--amber); }
+  .tick.blocked { border-color: var(--red); cursor: not-allowed; }
+  .mission .body { font-size: 14px; line-height: 1.4; }
+  .mission.is-done .body { text-decoration: line-through; opacity: .5; }
+  .mission .body small {
+    display: block; margin-top: 3px; font-family: var(--mono); font-size: var(--micro);
+    color: var(--muted); letter-spacing: .04em;
+  }
+
+  .bar { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--line); margin-bottom: 14px; }
+  .bar i { display: block; height: 100%; background: var(--green); }
+
+  .btn {
+    /* `font: inherit` also picks up the mono face and tracking of an
+       .eyebrow a button happens to sit in. Buttons are always sans. */
+    font: inherit; font-family: var(--sans); letter-spacing: normal; text-transform: none;
+    font-size: 13px; border-radius: 999px; padding: 7px 15px;
+    cursor: pointer;
+    /* A plain .btn used to fall through to the browser's own button chrome,
+       which in a dark window is a grey slab with grey text. Give it the
+       quiet outline by default; .primary still overrides it. */
+    background: transparent; border: 1px solid var(--line); color: var(--ink-2);
+  }
+  .btn:hover { border-color: var(--muted); color: var(--ink); }
+  .btn.primary { background: var(--green); border-color: var(--green); color: var(--on-green); }
+  .btn.primary:hover { background: var(--green-deep); color: var(--on-green); }
+  .btn.quiet { background: transparent; border-color: var(--line); color: var(--ink-2); }
+  .btn.quiet:hover { border-color: var(--muted); }
+  .btn:disabled { opacity: .55; cursor: default; }
+  .btn.small { font-size: 12.5px; padding: 5px 12px; }
+  .panel .btn.quiet { border-color: var(--line); color: inherit; }
+
+  /* ---------- mission row actions: tick + menu ---------- */
+  .mission-actions { display: flex; align-items: center; gap: 6px; position: relative; }
+  .icon-btn {
+    width: 26px; height: 26px; border-radius: 50%; flex: none;
+    border: 1px solid var(--line); background: none; color: inherit;
+    cursor: pointer; font-size: 14px; line-height: 1; display: grid; place-items: center;
+  }
+  .icon-btn:hover { border-color: var(--green); }
+  .menu {
+    position: absolute; top: 30px; right: 0; z-index: 10; min-width: 150px;
+    background: var(--card); color: var(--ink); border: 1px solid var(--line);
+    border-radius: var(--r-sm); box-shadow: var(--shadow); padding: 5px; display: grid; gap: 2px;
+  }
+  .menu button {
+    font: inherit; font-size: 13px; text-align: left; color: var(--ink-2);
+    background: none; border: 0; border-radius: 8px; padding: 7px 10px; cursor: pointer;
+  }
+  .menu button:hover { background: var(--soft-2); color: var(--ink); }
+  .menu button.danger { color: var(--red); }
+
+  /* ---------- inline forms (new mission, block reason, delete confirm) ---------- */
+  .inline-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+  .text-input {
+    flex: 1; min-width: 160px; font: inherit; font-size: 13.5px; color: var(--ink);
+    background: var(--soft-2); border: 1px solid var(--line-soft); border-radius: 10px;
+    padding: 8px 12px;
+  }
+  .panel .text-input { background: var(--card); border-color: var(--line); color: var(--ink); }
+  .text-input:focus-visible { outline: none; border-color: var(--green); }
+  .err-line { font-size: 12.5px; color: var(--red); margin: 4px 0 0; width: 100%; }
+
+  /* ---------- project detail ---------- */
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+    color: var(--muted); text-decoration: none; background: none; border: 0;
+    font: inherit; cursor: pointer; padding: 0; margin-bottom: 4px;
+  }
+  .back-link:hover { color: var(--green); }
+  /* `input()` builds `<label class="field"><span class="label">…</span>
+     <input|textarea class="text-input">`. A <label> is inline by default, so
+     outside the finance editor (which scoped its own rule) the control kept
+     its browser default width — a textarea's 20 cols, about 155px — and the
+     Save button beside it landed against its corner. The field is a block and
+     its control fills it, on every screen. */
+  .field { display: block; margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+  .field > .text-input { display: block; width: 100%; min-width: 0; }
+  textarea.text-input { resize: vertical; min-height: 104px; line-height: 1.5; }
+  .label {
+    font-family: var(--mono); font-size: var(--micro); letter-spacing: .13em;
+    text-transform: uppercase; color: var(--muted);
+    display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px;
+  }
+  .value { font-size: 14.5px; }
+  .box {
+    background: var(--soft-2); border: 1px solid var(--line-soft);
+    border-radius: var(--r-sm); padding: 13px 14px; font-size: 14px;
+  }
+  .box.mono { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+  .kv { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 7px 14px; font-size: 13px; }
+  .kv dt { font-family: var(--mono); font-size: var(--micro); color: var(--muted); }
+  .kv dd { margin: 0; overflow-wrap: anywhere; }
+  .service-block + .service-block { margin-top: 14px; }
+  .service-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+  .service-head h4 { margin: 0; font-size: 13.5px; font-weight: 600; }
+
+  /* ---------- empty state ---------- */
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: clamp(26px, 6vw, 46px) 20px;
+  }
+  .empty-state h3 { margin: 0 0 8px; font-size: 18px; font-weight: 500; letter-spacing: -.02em; }
+  .empty-state p { margin: 0 auto 20px; color: var(--muted); font-size: 14px; max-width: 46ch; line-height: 1.55; }
+  .empty-state p:last-child { margin-bottom: 0; }
+
+  .hint {
+    font-family: var(--mono); font-size: var(--micro); letter-spacing: .04em;
+    color: var(--muted); background: var(--soft-2); max-width: 88ch;
+    border-radius: 8px; padding: 11px 14px; margin-top: 14px; line-height: 1.65;
+  }
+
+  footer.nb {
+    margin-top: var(--page-end);
+    border-top: 1px solid var(--line); padding: 20px 0 70px;
+    font-size: 12.5px; color: var(--muted);
+  }
+
+  /* ================= leads: the v3 layout, in HQ's palette =================
+     Ported from draft/hq-v2.html. Everything is scoped to .leads or
+     .lead-modal so the table, toolbar and field rules the other screens
+     already rely on (working.css) are untouched. */
+
+  .leads-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+  .leads-head .chip-btn[hidden] { display: none !important; }
+  .leads { display: grid; grid-template-columns: 224px minmax(0, 1fr); gap: var(--gap); align-items: start; }
+  @media (max-width: 1040px) { .leads { grid-template-columns: 1fr; } }
+
+  .side { display: flex; flex-direction: column; gap: var(--gap); position: sticky; top: 92px; }
+  @media (max-width: 1040px) { .side { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); } }
+  @media (max-width: 620px) { .side { grid-template-columns: 1fr; } }
+  .side .card { padding: 15px; }
+  .side-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .side-head .h6 {
+    margin: 0; font-family: var(--mono); font-size: var(--micro); font-weight: 500;
+    letter-spacing: .13em; text-transform: uppercase; color: var(--muted);
+  }
+  .side-head .tot { font-family: var(--mono); font-size: var(--micro); color: var(--muted); }
+  .side-list { display: flex; flex-direction: column; gap: 1px; margin: 0 -7px; }
+  .side-row {
+    display: grid; grid-template-columns: 9px 1fr auto; align-items: center; gap: 10px;
+    padding: 6px 8px; border: 0; border-radius: 7px; background: none;
+    font: inherit; font-size: 13px; color: var(--ink-2); text-align: left; cursor: pointer; width: 100%;
+  }
+  .side-row:hover { background: var(--soft-2); }
+  .side-row[aria-pressed="true"] { background: var(--ink); color: var(--ground); }
+  .side-row .sw { width: 9px; height: 9px; border-radius: 3px; background: var(--ssw); border: 1px solid var(--sbd); }
+  .side-row .g { width: 9px; font-size: var(--micro); line-height: 1; text-align: center; }
+  .side-row .n { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: var(--micro); font-weight: 500; }
+  .side-row.hot .n { color: var(--amber); }
+  .side-row[aria-pressed="true"].hot .n { color: inherit; }
+  .dist { display: flex; gap: 2px; height: 6px; border-radius: 999px; overflow: hidden; margin-bottom: 11px; background: var(--soft-2); }
+  .dist i { display: block; height: 100%; background: var(--ssw); box-shadow: inset 0 0 0 1px var(--sbd); }
+
+  /* The stage ramp: pale to deep, a distinct colour for won, dashed for
+     passed. The ramp is fixed ink on fixed swatches — it is the reading, not
+     the chrome — so each step carries the ink that stays legible on it
+     (--spen). Only `new` and `passed` use the palette's own tokens. */
+  .st-new       { --ssw: var(--soft-2);  --sbd: var(--line);  --spen: var(--ink); }
+  .st-looked    { --ssw: #D7E5DA;        --sbd: #C6D9CA;      --spen: #16231B; }
+  .st-shortlist { --ssw: #AFCDB6;        --sbd: #9DC0A6;      --spen: #16231B; }
+  .st-sent      { --ssw: #7FB093;        --sbd: #6CA283;      --spen: #16231B; }
+  /* Replied: a lighter green with the dark ink (4.9:1; it was pale ink at 3.4:1, axe 14 Nov) */
+  .st-replied   { --ssw: #5A9A78;        --sbd: #4E8E6D;      --spen: #16231B; }
+  .st-talks     { --ssw: #2D6A4F;        --sbd: #2D6A4F;      --spen: #EAF4EE; }
+  .st-won       { --ssw: #1B4332;        --sbd: #1B4332;      --spen: #EAF4EE; }
+  .st-passed    { --ssw: transparent;    --sbd: var(--line);  --spen: var(--muted); }
+
+  .leads-toolbar { display: grid; gap: 10px; padding: 14px; }
+  .searchrow { display: flex; gap: 9px; align-items: center; flex-wrap: wrap; }
+  /* Every <select> in HQ: one look. No native chrome, the chevron drawn in
+     the palette's muted colour, the same radius and height as the inputs. */
+  select {
+    appearance: none; -webkit-appearance: none;
+    min-width: 0; min-height: 38px; padding: 8px 34px 8px 12px; font: inherit; font-size: 13px;
+    color: var(--ink-2); background-color: var(--soft-2);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%238A9C90' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat; background-position: right 12px center;
+    border: 1px solid transparent; border-radius: 10px; cursor: pointer;
+  }
+  select:hover { color: var(--ink); }
+  select:focus-visible { outline: none; border-color: var(--green); background-color: var(--card); }
+  select option { background: var(--card); color: var(--ink); }
+  .sortsel { }
+  @media (max-width: 620px) {
+    .searchrow > kbd { display: none; }
+    .search { flex: 1 1 100%; }
+    .sortsel { flex: 1 1 auto; }
+  }
+  .search {
+    flex: 1; min-width: 0; min-height: 38px; padding: 8px 13px; font: inherit; font-size: 14px;
+    color: var(--ink); background: var(--soft-2);
+    border: 1px solid transparent; border-radius: 10px;
+  }
+  .search::placeholder { color: var(--muted); }
+  .search:focus-visible { outline: none; border-color: var(--green); background: var(--card); }
+  kbd {
+    font-family: var(--mono); font-size: var(--micro); border: 1px solid var(--line);
+    border-radius: 5px; padding: 2px 6px; background: var(--card); color: var(--muted);
+  }
+  .picker { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; align-items: start; }
+  @media (max-width: 860px) { .picker { grid-template-columns: repeat(2, 1fr); } }
+  .picker select { width: 100%; min-height: 34px; padding-block: 6px; font-size: 12.5px; border-radius: 8px; }
+
+  /* a multi-select dropdown that looks like the select beside it */
+  .dd { position: relative; }
+  .dd > summary {
+    display: flex; align-items: center; gap: 6px; list-style: none; cursor: pointer;
+    min-height: 34px; padding: 6px 9px; font-size: 12.5px; color: var(--ink-2);
+    background: var(--soft-2); border: 1px solid transparent; border-radius: 8px;
+  }
+  .dd > summary::-webkit-details-marker { display: none; }
+  .dd > summary::after { content: '▾'; margin-left: auto; color: var(--muted); font-size: var(--micro); }
+  .dd.on > summary { border-color: var(--green); color: var(--ink); }
+  .dd > summary .n {
+    font-family: var(--mono); font-size: var(--micro); background: var(--green); color: var(--on-green);
+    border-radius: 999px; padding: 0 6px;
+  }
+  .dd-menu {
+    position: absolute; z-index: 20; top: calc(100% + 5px); left: 0;
+    min-width: max(100%, 232px); max-width: 300px;
+    max-height: 320px; overflow: auto; padding: 5px;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--r-sm); box-shadow: var(--shadow); display: grid; gap: 1px;
+  }
+  .dd-opt {
+    display: grid; grid-template-columns: 14px 1fr auto; gap: 8px; align-items: center;
+    font: inherit; font-size: 12.5px; color: var(--ink-2); text-align: left;
+    background: none; border: 0; border-radius: 7px; padding: 6px 8px; cursor: pointer;
+  }
+  .dd-opt:hover { background: var(--soft-2); }
+  .dd-opt[aria-pressed="true"] { color: var(--ink); font-weight: 500; }
+  .dd-opt i { font-style: normal; color: var(--green); }
+  .dd-opt .n { font-family: var(--mono); font-size: var(--micro); color: var(--muted); }
+  /* The dropdowns nearest the right edge open leftwards, so a long option
+     list never hangs off the card. */
+  .picker .dd:nth-child(n+4) .dd-menu { left: auto; right: 0; }
+  @media (max-width: 860px) {
+    .picker .dd .dd-menu { left: 0; right: auto; }
+    .picker .dd:nth-child(even) .dd-menu { left: auto; right: 0; }
+  }
+  /* On a phone a two-up picker column is ~160px wide while the menu wants
+     232px, so an opened list hung off the side of the screen. One filter
+     per row: the menu is then exactly as wide as the card it sits in. */
+  @media (max-width: 620px) {
+    .picker { grid-template-columns: 1fr; gap: 8px; }
+    .picker .dd .dd-menu,
+    .picker .dd:nth-child(even) .dd-menu,
+    .picker .dd:nth-child(n+4) .dd-menu {
+      left: 0; right: auto; min-width: 100%; max-width: 100%;
+    }
+  }
+
+  /* ---------- Leads on a phone (P6 block 3, 14 Nov) ----------
+     phone.css draws the frame. Two panes: « List » (business tabs, search, the
+     table: the one region that scrolls) and « Summary » (pipeline, attention,
+     the actions, how the lists were built: one region that scrolls). The
+     pickers move into a sheet behind « Filters · n ». */
+  .tabs.leads-seg, .btn.filters-btn { display: none; }
+  .filter-sheet__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .filter-sheet__head h2 { margin: 0; font-size: 20px; font-weight: 500; letter-spacing: -.02em; }
+  @media (max-width: 760px) {
+    .leads-screen > .hero { padding-block: 6px 0; }
+    .leads-screen > .hero h1 { font-size: 30px; }
+    .leads-screen > .hero .sub { display: none; }
+    .leads-screen[data-seg="list"] .leads-head { display: none; }
+    .tabs.leads-seg { display: flex; flex-wrap: nowrap; gap: 3px; margin: 0; }
+    .leads-seg .tab { flex: 1 1 0; justify-content: center; gap: 6px; }
+    .leads-seg .tab .n { font-family: var(--mono); font-size: 12px; opacity: .75; }
+    .leads-screen > .tabs { margin: 0; }
+    .leads-screen[data-seg="summary"] > .tabs:not(.leads-seg) { display: none; }
+
+    /* min-width: 0 down the chain, or the table's own width pushes every card past the screen's edge */
+    .leads-screen .leads { flex: 1 1 auto; min-height: 0; min-width: 0; display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+    .leads-screen .leads > div { flex: 1 1 auto; min-height: 0; min-width: 0; gap: 10px !important; }
+    .leads-screen .leads > div > section { min-width: 0; }
+    .leads-screen > .tabs:not(.leads-seg) { gap: 2px; }
+    .leads-screen > .tabs:not(.leads-seg) .tab { padding-inline: 10px; font-size: 13px; gap: 5px; }
+    .leads-screen[data-seg="list"] .leads > .side,
+    .leads-screen[data-seg="list"] .lists-note { display: none; }
+    .leads-screen[data-seg="list"] .leads > div > section[aria-label="Leads"] { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+    .leads-screen[data-seg="list"] .tablewrap { flex: 1 1 auto; min-height: 0; }
+    .leads-screen[data-seg="summary"] .leads-toolbar,
+    .leads-screen[data-seg="summary"] .leads > div > section[aria-label="Leads"] { display: none; }
+    .leads-screen[data-seg="summary"] .leads > div { flex: none; }
+    .leads-screen[data-seg="summary"] .side { position: static; flex: none; }
+    .leads-screen .keyhints { display: none; }
+    .leads-screen .lists-note { margin-top: 0; }
+
+    .leads-toolbar { padding: 10px; grid-template-columns: minmax(0, 1fr); }
+    .leads-toolbar .searchrow { flex-wrap: nowrap; }
+    .leads-toolbar .searchrow > * { min-width: 0; }
+    .leads-toolbar .searchrow .search { flex: 1 1 auto; min-width: 0; }
+    /* the sort and « Clear » are in the filter sheet on a phone */
+    .leads-toolbar .searchrow .sortsel, .leads-toolbar .searchrow > .btn:not(.filters-btn) { display: none; }
+    /* the business tabs already say the business; the score says the fit */
+    .leads-screen .who-cell .biz, .leads-screen .fit .tierpill { display: none; }
+    /* The table fits the phone: star, status, the lead (cut with an ellipsis) and the fit. */
+    .leads-screen .leads table { width: 100%; table-layout: fixed; }
+    .leads-screen .leads th:nth-child(1), .leads-screen .leads td:nth-child(1) { width: 40px; }
+    .leads-screen .leads th:nth-child(2), .leads-screen .leads td:nth-child(2) { width: 108px; }
+    .leads-screen .leads th:nth-child(7), .leads-screen .leads td:nth-child(7) { width: 44px; text-align: right; }
+    .leads-screen .leads td { padding-inline: 6px; }
+    .leads-screen .leads td:nth-child(3) { overflow: hidden; }
+    .leads-screen .leads td:nth-child(3) > * { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .leads-toolbar .picker { display: none; }
+    .btn.filters-btn { display: inline-flex; flex: 0 0 auto; }
+    .filters-btn.on { border-color: var(--green); color: var(--ink); }
+  }
+  /* The filter sheet: up from the bottom, every list open as a checklist. */
+  @media (max-width: 620px) {
+    .scrim:has(> .filter-sheet) { place-items: end stretch; }
+    .scrim > .modal.filter-sheet {
+      min-height: 0; max-height: 82dvh; border-radius: 22px 22px 0 0;
+      padding: 0 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+  .filter-sheet .filter-sheet__head { position: sticky; top: 0; z-index: 2; background: var(--card); padding: 16px 0 12px; }
+  .filter-sheet .picker { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .filter-sheet__sort { display: grid; gap: 8px; margin-bottom: 18px; }
+  .filter-sheet__sort .eyebrow { margin: 0; }
+  .filter-sheet__sort .sortsel { width: 100%; min-height: 44px; }
+  .filter-sheet__sort .btn[hidden] { display: none; }
+  .filter-sheet .dd > summary { background: none; padding: 0 0 4px; min-height: 44px; align-items: flex-end; font-family: var(--mono); font-size: var(--micro); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); pointer-events: none; }
+  .filter-sheet .dd > summary::after { content: none; }
+  .filter-sheet .dd-menu { position: static; min-width: 0; max-width: none; max-height: none; box-shadow: none; margin-top: 8px; }
+  .filter-sheet .dd-opt { min-height: 44px; font-size: 15px; }
+
+  /* One letter per inbox (14 Nov): the warning under a lead that shares its address. */
+  .leads .who-cell .inbox-shared { display: block; color: var(--amber); font-size: 12px; }
+  .leads .who-cell .linkedin-sent { display: block; color: var(--muted); font-size: 12px; }
+  /* ---------- leads table ---------- */
+  .leads .tablewrap { overflow-x: auto; }
+  /* The column names stay on top while the list scrolls inside its card. */
+  .leads .tablewrap thead th { position: sticky; top: 0; z-index: 1; background: var(--card); }
+  .leads table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 760px; }
+  @media (max-width: 620px) {
+    /* On a phone the table keeps the star, the status, the lead and the fit;
+       category, area, contact and touched live in the pop-up. */
+    .leads table { min-width: 0; }
+    .leads th:nth-child(4), .leads td:nth-child(4),
+    .leads th:nth-child(5), .leads td:nth-child(5),
+    .leads th:nth-child(6), .leads td:nth-child(6),
+    .leads th:nth-child(8), .leads td:nth-child(8) { display: none; }
+    .leads td { padding: 10px 8px; }
+  }
+  .leads th {
+    text-align: left; font-family: var(--mono); font-size: var(--micro); font-weight: 500;
+    letter-spacing: .11em; text-transform: uppercase; color: var(--muted);
+    padding: 0 12px 11px; border-bottom: 1px solid var(--line);
+  }
+  .leads td { padding: 11px 12px; border-bottom: 1px solid var(--line-soft); vertical-align: middle; }
+  .leads tbody tr { cursor: pointer; }
+  .leads tbody tr:hover td { background: var(--soft-2); }
+  .leads tbody tr[aria-selected="true"] td { background: var(--green-soft); }
+  .leads tbody tr.done td { opacity: .62; }
+  /* dimmed, the muted sub-line fell to 3:1; the full ink keeps it at 4.5:1 or more (axe, 14 Nov) */
+  .leads tbody tr.done .who-cell small { color: var(--ink); }
+  .leads .who-cell b { font-weight: 600; }
+  .leads .who-cell small { display: block; color: var(--muted); font-size: 12px; }
+  .leads .c-dim { color: var(--muted); }
+  /* The area under the country (Uccle - Ukkel). Unstyled, it fell to the
+     browser's "smaller", 11.25px — under the 12px floor on every lead row. */
+  .leads .c-dim small { display: block; font-size: var(--micro); }
+  .leads .c-contact { font-family: var(--mono); font-size: var(--micro); color: var(--ink-2); overflow-wrap: anywhere; line-height: 1.45; }
+  .leads .c-contact .k { display: block; font-size: var(--micro); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+  .leads .c-touched { font-family: var(--mono); font-size: var(--micro); color: var(--muted); white-space: nowrap; }
+  .leads .c-touched.seen { color: var(--green); }
+  .leads .c-touched.due { color: var(--amber); }
+
+  .starbtn {
+    background: none; border: 0; padding: 2px 4px; cursor: pointer;
+    color: var(--muted); font-size: 14px; line-height: 1;
+  }
+  .starbtn.on { color: var(--amber); }
+  .stagepill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; border-radius: 999px; padding: 3px 10px; white-space: nowrap;
+    background: var(--ssw); color: var(--spen, var(--ink)); border: 1px solid var(--sbd);
+  }
+  .st-passed .stagepill { border-style: dashed; }
+  .verif { margin-left: 6px; font-size: var(--micro); }
+
+  /* ---------- business tabs ---------- */
+  .tabs { display: flex; gap: 3px; margin-bottom: 14px; flex-wrap: wrap; }
+  .tab {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: inherit; font-size: 13.5px; color: var(--ink-2);
+    background: none; border: 0; border-radius: 999px; padding: 7px 15px; cursor: pointer;
+  }
+  .tab:hover { background: var(--soft-2); }
+  .tab[aria-selected="true"] { background: var(--ink); color: var(--ground); }
+  .tab .n { font-family: var(--mono); font-size: var(--micro); opacity: .8; }
+
+  .biz {
+    font-family: var(--mono); font-size: var(--micro); letter-spacing: .09em; text-transform: uppercase;
+    color: var(--muted); border: 1px solid var(--line); border-radius: 4px;
+    padding: 1px 5px; margin-right: 7px; vertical-align: 1px; font-weight: 400;
+  }
+  .fit { display: inline-flex; align-items: center; gap: 7px; }
+  .fit .score { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 12px; }
+  .tierpill {
+    font-family: var(--mono); font-size: var(--micro); letter-spacing: .07em; text-transform: uppercase;
+    border-radius: 999px; padding: 2px 7px; white-space: nowrap;
+  }
+  .tier-hot  { color: var(--on-green); background: var(--green); }
+  .tier-warm { color: var(--green); background: var(--green-soft); }
+  .tier-cool { color: var(--muted); background: var(--idle-soft); }
+
+  /* ---------- the modal shell ---------- */
+  .scrim {
+    position: fixed; inset: 0; z-index: 60;
+    background: rgba(16,22,19,.45); backdrop-filter: blur(3px);
+    display: grid; place-items: center; padding: 20px;
+  }
+  .modal {
+    width: min(1060px, 100%); max-height: min(88vh, 900px); overflow: auto;
+    background: var(--card); color: var(--ink);
+    border-radius: 26px; box-shadow: var(--shadow); padding: 26px;
+  }
+  .modal.narrow { width: min(620px, 100%); }
+
+  /* ---------- the lead pop-up: floating circles, one pane at a time, no scroll ---------- */
+  .lead-modal {
+    position: relative; overflow: visible; display: flex; flex-direction: column;
+    height: min(86vh, 860px); max-height: none; padding: 24px 28px 22px;
+    width: min(1040px, calc(100% - 200px)); margin-left: 100px;
+  }
+  .lead-modal > .modal-head { flex: none; margin-bottom: 14px; }
+  .rail {
+    position: absolute; right: calc(100% + 14px); top: 22px;
+    display: grid; gap: 10px; z-index: 2; justify-items: end;
+  }
+  /* one round button per pane, its name written beside it, always */
+  .rail__btn {
+    display: flex; align-items: center; gap: 10px; flex-direction: row-reverse;
+    background: none; border: 0; padding: 0; cursor: pointer; font: inherit; color: var(--ink-2);
+  }
+  .rail__glyph {
+    width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--line);
+    background: var(--card); color: var(--ink-2); box-shadow: var(--shadow);
+    display: grid; place-items: center; font-size: 18px; line-height: 1; font-family: var(--sans); font-weight: 600;
+  }
+  .rail__btn:hover .rail__glyph { border-color: var(--green); color: var(--ink); }
+  .rail__btn.is-on .rail__glyph { background: var(--green); border-color: var(--green); color: var(--on-green); }
+  .rail__btn.is-on .rail__lbl { color: var(--ink); }
+  .rail__lbl {
+    font-family: var(--mono); font-size: var(--micro); letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); white-space: nowrap;
+  }
+  .pane { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .pane > .sec { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; margin-bottom: 0; }
+  .pane-email .bodybox { flex: 1 1 auto; min-height: 120px; resize: none; }
+  .pane-email .sendrow { flex: none; }
+  .pane-email .sec + .sec { flex: none; max-height: 34%; overflow: auto; margin-top: 14px; }
+  .pane-grid { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+  .overview { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 14px; }
+  .glance { display: flex; flex-wrap: wrap; gap: 6px; }
+  .gchip { font-size: 12.5px; padding: 5px 10px; border-radius: 999px; background: var(--soft); color: var(--ink-2); border: 1px solid transparent; }
+  .gchip.g-brand { background: var(--green-soft); color: var(--green); }
+  .gchip.g-warn { background: var(--amber-soft); color: var(--amber); }
+  .nextstep { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: var(--r-sm); background: var(--soft-2); border: 1px solid var(--line-soft); }
+  .their-reply { margin-top: 12px; padding: 12px 14px; border-radius: var(--r-sm); background: var(--soft-2); border: 1px solid var(--line-soft); }
+  .their-reply__sum { margin: 4px 0 8px; font-weight: 600; }
+  .their-reply__text { margin: 0; padding-left: 12px; border-left: 2px solid var(--line); color: var(--ink-2, var(--muted)); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 14em; overflow: auto; }
+  .nextstep__k { font-family: var(--mono); font-size: var(--micro); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); flex: none; }
+  .nextstep__v { font-size: 14px; color: var(--ink); flex: 1 1 auto; min-width: 0; }
+  .nextstep .btn { flex: none; }
+  .pane-grid > * { min-width: 0; min-height: 0; overflow: auto; scrollbar-width: thin; }
+  .pane-notes .sec textarea, .pane-notes .notesbox { flex: 1 1 auto; min-height: 160px; resize: none; }
+  @media (max-width: 900px) {
+    .lead-modal { width: 100%; margin-left: 0; height: auto; max-height: min(88vh, 900px); overflow: auto; display: block; }
+    .rail { position: sticky; top: 0; right: auto; display: flex; gap: 14px; margin-bottom: 12px; justify-content: center; }
+    .rail__btn { flex-direction: row; gap: 6px; }
+    .rail__glyph { width: 40px; height: 40px; box-shadow: none; }
+    .nextstep { flex-wrap: wrap; }
+    .pane-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 620px) {
+    /* Full screen on a phone, with ‹ › ✕ on their own sticky row at the top:
+       the close button stays in reach however far down the draft you are. */
+    .scrim { padding: 0; place-items: stretch; }
+    .modal, .modal.narrow {
+      width: 100%; max-height: 100dvh; min-height: 100dvh;
+      border-radius: 0; padding: 0 16px 24px;
+      overscroll-behavior: contain;
+    }
+    .modal-head { flex-wrap: wrap; margin-bottom: 16px; }
+    .modal-head .navbtns {
+      order: -1; width: 100%; justify-content: flex-end;
+      position: sticky; top: 0; z-index: 3;
+      margin: 0 -16px; padding: 10px 16px;
+      background: var(--card); border-bottom: 1px solid var(--line-soft);
+    }
+    .modal-head h2 { font-size: 22px; }
+  }
+  .modal-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+  /* The title block is allowed to shrink and to break a long single-word
+     company name; the nav buttons are not, so ✕ can never be pushed off. */
+  .modal-head > :first-child { flex: 1 1 200px; min-width: 0; }
+  .modal-head h2 { overflow-wrap: anywhere; }
+  .crumb {
+    font-family: var(--mono); font-size: var(--micro); letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted); line-height: 1.5;
+  }
+  .modal-head h2 { margin: 2px 0 0; font-size: 26px; font-weight: 400; letter-spacing: -.035em; }
+  .modal-head .dom { font-size: 12.5px; text-decoration: none; }
+  .navbtns { display: flex; gap: 6px; margin-left: auto; flex: none; }
+  .x {
+    width: 34px; height: 34px; border-radius: 50%; flex: none;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink-2);
+    cursor: pointer; font-size: 15px; line-height: 1;
+  }
+  .x:hover { border-color: var(--green); color: var(--green); }
+  .x:disabled { opacity: .4; cursor: default; }
+  .modal-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 24px; }
+  /* Grid items default to min-content, which would let one long address or
+     one unbreakable URL widen the whole column. */
+  .modal-grid > * { min-width: 0; }
+  @media (max-width: 900px) { .modal-grid { grid-template-columns: 1fr; } }
+
+  .sec { margin-bottom: 20px; min-width: 0; }
+  .sec h6 {
+    margin: 0 0 9px; font-family: var(--mono); font-size: var(--micro); font-weight: 500;
+    letter-spacing: .13em; text-transform: uppercase; color: var(--muted);
+  }
+  .sec-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+  .sec-head h6 { margin: 0; }
+
+  /* ---------- outreach composer ---------- */
+  .langs { display: flex; gap: 4px; }
+  .langs button {
+    font: inherit; font-size: 12px; font-weight: 500; color: var(--ink-2);
+    background: var(--soft-2); border: 1px solid transparent; border-radius: 8px;
+    padding: 5px 12px; cursor: pointer; min-width: 40px;
+  }
+  .langs button[aria-pressed="true"] { background: var(--green); color: var(--on-green); }
+  .torow { display: grid; grid-template-columns: 42px 1fr; align-items: center; gap: 10px; margin-bottom: 11px; }
+  .torow .lbl { font-family: var(--mono); font-size: var(--micro); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .torow .to {
+    min-height: 38px; display: flex; align-items: center; gap: 8px; padding: 4px 13px;
+    background: var(--soft-2); border: 1px solid var(--line-soft); border-radius: 10px; font-size: 14px;
+  }
+  .torow .to input {
+    flex: 1; min-width: 0; font: inherit; font-size: 14px; color: var(--ink);
+    background: none; border: 0; padding: 5px 0;
+  }
+  .torow .to input:focus-visible { outline: none; }
+  .torow .to small { color: var(--muted); font-family: var(--mono); font-size: var(--micro); white-space: nowrap; }
+  @media (max-width: 620px) {
+    /* Side by side, the name field shrank to nothing and the address ran
+       into the border. Stack them: the whole recipient is readable. */
+    .torow { grid-template-columns: 1fr; gap: 4px; }
+    .torow .to { flex-direction: column; align-items: stretch; gap: 2px; padding: 9px 13px; }
+    .torow .to input { padding: 2px 0; }
+    .torow .to small { white-space: normal; overflow-wrap: anywhere; }
+  }
+  .moderow { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 11px; flex-wrap: wrap; }
+  .modes { display: flex; gap: 4px; }
+  .modes button {
+    font: inherit; font-size: 13px; color: var(--ink-2);
+    background: none; border: 1px solid var(--line); border-radius: 9px;
+    padding: 6px 15px; cursor: pointer;
+  }
+  .modes button[aria-pressed="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+  .segname { font-size: 12.5px; color: var(--muted); }
+  .subjbox, .bodybox {
+    width: 100%; font: inherit; color: var(--ink);
+    background: var(--soft-2); border: 1px solid var(--line-soft); border-radius: 10px;
+    padding: 11px 13px;
+  }
+  .subjbox { font-size: 14px; margin-bottom: 9px; }
+  .bodybox { font-size: 13.5px; line-height: 1.6; min-height: 250px; resize: vertical; display: block; }
+  .subjbox:focus-visible, .bodybox:focus-visible { outline: none; border-color: var(--green); background: var(--card); }
+  .sendrow { display: flex; gap: 8px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+  .btn.link {
+    background: none; border: 0; color: var(--green); padding: 7px 4px; text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .saved-note { font-family: var(--mono); font-size: var(--micro); color: var(--muted); margin-left: auto; }
+  .sendhelp { margin: 10px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+  .sendhelp a { text-decoration: underline; text-underline-offset: 3px; }
+  .angle {
+    border-left: 3px solid var(--green); background: var(--green-soft);
+    border-radius: 0 10px 10px 0; padding: 13px 15px;
+    font-size: 13.5px; line-height: 1.55; color: var(--ink); white-space: pre-wrap;
+  }
+  .why { font-size: 13px; line-height: 1.55; color: var(--ink-2); }
+  .why p { margin: 0 0 8px; }
+  .why b { color: var(--ink); font-weight: 600; }
+  .warnline {
+    font-size: 12.5px; color: var(--amber); background: var(--amber-soft);
+    border-radius: 8px; padding: 9px 11px; line-height: 1.5; margin: 0 0 11px;
+  }
+  .warnline button { font: inherit; background: none; border: 0; color: inherit; text-decoration: underline; cursor: pointer; padding: 0; }
+
+  /* ---------- the status grid, details, notes, timeline ---------- */
+  .stagegrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
+  .stagebtn {
+    display: flex; align-items: center; gap: 8px;
+    font: inherit; font-size: 12.5px; color: var(--ink-2); text-align: left;
+    background: var(--soft-2); border: 1px solid transparent; border-radius: 8px;
+    padding: 7px 10px; cursor: pointer;
+  }
+  .stagebtn:hover { border-color: var(--line); }
+  .stagebtn[aria-pressed="true"] { background: var(--ink); color: var(--ground); }
+  .stagebtn .sw { width: 8px; height: 8px; border-radius: 2px; background: var(--ssw); border: 1px solid var(--sbd); flex: none; }
+  .stagebtn .d { margin-left: auto; font-family: var(--mono); font-size: var(--micro); opacity: .8; }
+  .follow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 11px; }
+  .follow input[type="date"] {
+    font: inherit; font-size: 13px; color: var(--ink); background: var(--soft-2);
+    border: 1px solid var(--line-soft); border-radius: 9px; padding: 6px 10px;
+  }
+  .duepill, .seenpill {
+    font-family: var(--mono); font-size: var(--micro); border-radius: 999px; padding: 3px 9px;
+  }
+  .duepill { color: var(--amber); background: var(--amber-soft); }
+  .seenpill { color: var(--green); background: var(--green-soft); }
+  .notesbox {
+    width: 100%; font: inherit; font-size: 13px; color: var(--ink);
+    background: var(--soft-2); border: 1px solid var(--line-soft); border-radius: 10px;
+    padding: 11px 13px; min-height: 86px; resize: vertical; display: block;
+  }
+  .notesbox:focus-visible { outline: none; border-color: var(--green); background: var(--card); }
+  .timeline { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+  .tl { display: grid; grid-template-columns: 76px 1fr; gap: 10px; align-items: baseline; font-size: 12.5px; }
+  .tl .when { font-family: var(--mono); font-size: var(--micro); color: var(--muted); }
+  .lists-note { margin-top: 18px; font-size: 12.5px; color: var(--muted); }
+  .lists-note summary { cursor: pointer; }
+  .lists-note .card { margin-top: 10px; }
+  .lists-note p { margin: 6px 0 0; line-height: 1.55; }
+
+  /* ---------- toast ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(14px);
+    z-index: 80; background: var(--ink); color: var(--ground);
+    border-radius: 999px; padding: 9px 18px; font-size: 13px;
+    opacity: 0; pointer-events: none; transition: opacity .16s, transform .16s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.show.has-action { pointer-events: auto; }
+  .toast__action { font: inherit; font-weight: 600; color: inherit; background: none; border: 0; padding: 0 2px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+  .keyhints { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 12px; }
+  .keyhints span { display: inline-flex; align-items: center; gap: 5px; }
+
+  /* ---------- phone ----------
+     Two rules, applied everywhere: nothing you tap is under 40px, and
+     nothing widens the page — a strip that does not fit scrolls inside
+     itself instead. */
+  @media (max-width: 480px) {
+    .wrap { padding-inline: 16px; }
+
+    .topbar-inner { gap: 10px; padding-block: 12px; }
+    /* A blurred header would become the containing block of the fixed bar
+       below, pinning it to the top — so on a phone the header is plain. */
+    .topbar { backdrop-filter: none; background: var(--ground); }
+    /* The strip used to scroll inside itself, which meant it could start out
+       scrolled to the active tab with the earlier pills out of view and no
+       hint they exist. Wrapping to a second row instead means nothing is
+       ever hidden. */
+    /* The six sections move to a bar along the bottom of the phone, always in
+       reach of a thumb; the header keeps only the name and the two controls. */
+    /* Five tabs at most, icon over label (Apple's tab bar, Material 3's
+       navigation bar): Projects and Finance sit behind « More » (Andy, 23 Oct).
+       `header … > nav.pills` outranks the 1000px header grid below, whose
+       justify-self: start shrank this fixed bar to its content. */
+    /* The phone tab bar (a floating Liquid Glass capsule, 14 Nov) lives in
+       /assets/phone.css with the rest of the phone layer. */
+
+    /* « More »: a bottom sheet with the sections that are not in the bar. */
+    .navsheet { position: fixed; inset: 0; z-index: 60; }
+    .navsheet__backdrop { position: absolute; inset: 0; background: rgba(8, 12, 10, .55); }
+    .navsheet__panel {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      display: grid; gap: 4px; padding: 8px 12px calc(16px + env(safe-area-inset-bottom, 0px));
+      background: var(--card); border-top: 1px solid var(--line); border-radius: 20px 20px 0 0;
+      animation: navsheet-up .18s ease-out;
+    }
+    .navsheet__grip { justify-self: center; width: 36px; height: 4px; border-radius: 2px; background: var(--line); margin: 2px 0 8px; }
+    .navsheet__item {
+      display: flex; align-items: center; gap: 14px; min-height: 52px; padding: 0 14px;
+      font: inherit; font-size: 16px; color: var(--ink); background: none; border: 0; border-radius: 12px; cursor: pointer; text-align: left;
+    }
+    .navsheet__item .i { display: grid; place-items: center; color: var(--muted); }
+    .navsheet__item .i svg { width: 22px; height: 22px; }
+    .navsheet__item[aria-current="page"] { background: color-mix(in srgb, var(--green) 16%, transparent); }
+    .navsheet__item[aria-current="page"] .i { color: var(--green); }
+    .navsheet__glyph { width: 22px; text-align: center; color: var(--muted); font-size: 18px; }
+    .navsheet__item:disabled { color: var(--muted); cursor: default; }
+    @keyframes navsheet-up { from { transform: translateY(100%); } to { transform: none; } }
+
+    .chip-btn, .btn, .tab, .x, .sortsel, .picker select, .dd > summary,
+    .dd-opt, .modes button, .langs button, .stagebtn, .side-row, .back-link,
+    .lists-note summary, .menu button, .starbtn,
+    .follow input[type="date"] { min-height: 40px; }
+    .starbtn { min-width: 40px; }
+    .btn, .tab, .chip-btn { display: inline-flex; align-items: center; justify-content: center; }
+    /* The initials are a button now, so they get the phone tap size too. */
+    .avatar { width: 44px; height: 44px; }
+    .btn.small { font-size: 13px; padding: 7px 14px; }
+    .lk { display: inline-flex; align-items: center; min-height: 40px; padding: 5px 12px; }
+    .x { width: 40px; height: 40px; }
+    .search, .text-input, .subjbox, .notesbox { min-height: 44px; }
+
+    /* A mission's tick and its ⋯ keep their small drawing and gain the hit
+       area around it, rather than ballooning into 40px rings in a dense
+       list. (The star in the leads table can't do this — its neighbours are
+       other clickable rows — so it is sized outright, above.) */
+    .tick, .icon-btn { position: relative; }
+    .tick::after, .icon-btn::after {
+      content: ''; position: absolute; left: 50%; top: 50%; z-index: 1;
+      width: 42px; height: 42px; transform: translate(-50%, -50%);
+    }
+
+    /* An inline link takes vertical padding without moving anything around
+       it, which is how a link in a sentence gets a 40px hit area. */
+    .modal a:not(.btn), .sendhelp a, .lists-note a { padding-block: 13px; }
+
+    /* Except the domain under a popup's title, which is not in a sentence:
+       there the padding reached back up into the <h2> above it and the two
+       boxes overlapped by 9px. It takes its 40px as height instead. */
+    .modal-head a.dom {
+      padding-block: 0; min-height: 40px;
+      display: inline-flex; align-items: center;
+    }
+
+    .hero { padding-block: 20px 8px; gap: 16px; }
+    .card, .panel { padding: 16px; }
+    .modal-grid { gap: 18px; }
+  }
+
+  /* ---------- the phone header ----------
+     Below 620px the six-item header cannot be one row, and left to flex-wrap
+     it broke into three: the wordmark, then the pills, then a loose row of
+     "Mac online" / "Sign out" / the avatar — three bands of chrome before
+     any content. Two rows instead, laid out explicitly:
+
+       row 1   HEADQUARTERS                               (HQ)
+               hq.example.com
+       row 2   [ Projects · Missions · … ]     Mac online
+
+     The pills keep scrolling inside themselves (min-width: 0 is what lets
+     them: a grid item's default min-width: auto would otherwise refuse to
+     shrink below its content and push the page sideways at 360). */
+  @media (max-width: 1000px) {
+    /* Every child names an area that exists. The pills used to ask for a
+       `nav` area the template never defined, and the base rule's
+       `grid-column: 3` for the controls outranked their area here — so at
+       700–900 px the tabs and the Mac online / HQ group were auto-placed on
+       top of the wordmark. */
+    .topbar-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "brand end"
+        "nav   nav"
+        "mail  mail";
+      align-items: center;
+      column-gap: 10px;
+      row-gap: 10px;
+    }
+    /* The domain goes under the wordmark, not beside it. */
+    .brand-wrap { grid-area: brand; min-width: 0; }
+    .brand { min-width: 0; }
+    /* One line, always: at 360 the domain is within a few pixels of the
+       column, and a wrap would put "COM" on a line of its own. */
+    .brand i { white-space: nowrap; font-size: var(--micro); }
+    .topbar-inner > .topbar-end { grid-area: end; grid-column: auto; justify-self: end; }
+    .topbar-inner > nav.pills { grid-area: nav; margin-inline: 0; min-width: 0; justify-self: start; }
+    /* The status chip rides the right end of the pills row, spanning the two
+       narrow columns so neither the avatar's nor Sign out's column has to be
+       as wide as the chip — which is what squeezed the domain into two lines. */
+    /* Only present behind Access; given its own line so a long address can
+       never widen the two rows above it. */
+    .email-chip {
+      grid-area: mail; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .email-chip[hidden] { display: none; }
+  }
+
+  /* At 360 the domain and the two controls beside it are within a few pixels
+     of the full width — let the chip give up its padding before the row does. */
+  @media (max-width: 400px) {
+    .topbar-inner { column-gap: 8px; }
+    /* At 320px the chip's words ran over the wordmark: only the dot stays. */
+    #macbtn .mac-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    #macbtn { min-width: 40px; justify-content: center; padding-inline: 0; }
+  }
+
+
+  /* Safe view: the client sees the questionnaire and nothing of HQ. */
+  html.safe-view, html.safe-view body { background: #ffffff; color-scheme: light; }
+  html.safe-view .topbar { display: none !important; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+  /* A screen still loading (audit 12): quiet bars where the cards will be, no
+     words. Shown only after 200 ms, so a cached screen never flashes it. */
+  .screen-loading { display: grid; gap: var(--gap); padding-top: 8px; }
+  .screen-loading span {
+    display: block; height: 92px; border-radius: var(--r);
+    background: linear-gradient(90deg, var(--card) 0%, var(--soft) 50%, var(--card) 100%);
+    background-size: 200% 100%; animation: screen-loading 1.4s ease-in-out infinite;
+  }
+  .screen-loading span:first-child { height: 56px; width: 46%; }
+  .screen-loading span:last-child { height: 220px; }
+  @keyframes screen-loading { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+  @media (prefers-reduced-motion: reduce) { .screen-loading span { animation: none; background: var(--card); } }
+
+  /* The phone rules (D17) and the phone frame (P6) live in /assets/phone.css. */
+
+  /* Reports on a phone (P6 block 4): one card at a time behind the segments. */
+  .tabs.rep-seg { display: none; }
+  @media (max-width: 760px) {
+    .reports > .hero { padding-block: 6px 0; }
+    .reports > .hero h1 { font-size: 30px; }
+    .reports > .hero .sub { display: none; }
+    .tabs.rep-seg { display: flex; flex-wrap: nowrap; gap: 3px; margin: 0; }
+    .rep-seg .tab { flex: 1 1 0; justify-content: center; }
+    .reports .rep-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+    .reports .rep-body > .grid { display: contents; }
+    .reports [data-pane] { display: none; }
+    .reports[data-seg="funnel"] [data-pane="funnel"],
+    .reports[data-seg="pipeline"] [data-pane="pipeline"],
+    .reports[data-seg="money"] [data-pane="money"] { display: block; }
+  }
+  /* Reports (audit E18) */
+  .reports .rep-tabs { margin: 6px 0 12px; }
+  .reports > .grid, .reports .rep-body > .grid { margin-top: var(--gap, 16px); }
+  .reports .rep-table { overflow-x: auto; }
+  .reports .rep-table table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .reports .rep-table th {
+    text-align: left; font-family: var(--mono); font-size: var(--micro); font-weight: 500;
+    letter-spacing: .11em; text-transform: uppercase; color: var(--muted);
+    padding: 0 12px 11px; border-bottom: 1px solid var(--line);
+  }
+  .reports .rep-table td { padding: 11px 12px; border-bottom: 1px solid var(--line-soft); }
+  .reports .rep-table tbody tr.is-total td { border-bottom: 0; border-top: 1px solid var(--line); font-weight: 500; }
+  .reports .rep-table td:not(:first-child), .reports .rep-table th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .reports .rep-table .pct { color: var(--muted); margin-left: 6px; }
+  @media (max-width: 620px) {
+    .reports .rep-table th, .reports .rep-table td { padding-left: 6px; padding-right: 6px; }
+    .reports .rep-table .pct { display: block; margin-left: 0; font-size: var(--micro); }
+    /* the funnel keeps Sent, Replied and Won on a phone: the columns fit, nothing scrolls sideways */
+    .reports .rep-funnel th:nth-child(3), .reports .rep-funnel td:nth-child(3),
+    .reports .rep-funnel th:nth-child(5), .reports .rep-funnel td:nth-child(5) { display: none; }
+    .reports .rep-funnel td:first-child { overflow-wrap: anywhere; }
+  }
+</style>
+<link rel="stylesheet" href="/assets/working.css">
+<link rel="stylesheet" href="/assets/myinfo.css">
+<link rel="stylesheet" href="/assets/home.css">
+<link rel="stylesheet" href="/assets/phone.css">
+<link rel="stylesheet" href="/assets/outreach.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand-wrap">
+      <a class="brand" id="home-link" href="/" aria-label="Headquarters home"><b>HEADQUARTERS</b><i>hq.example.com</i></a>
+    </div>
+    <nav class="pills" id="nav" aria-label="Sections"></nav>
+    <div class="topbar-end">
+      <span class="chip-btn" id="macbtn"><i class="dot d-ok"></i>Mac online</span>
+      <div class="umenu" id="usermenu">
+        <button type="button" class="avatar" id="avatar" aria-haspopup="menu" aria-expanded="false" title="Palette and sign out">HQ</button>
+        <div class="umenu__list" id="usermenu-list" role="menu" hidden></div>
+      </div>
+    </div>
+    <span class="email-chip" id="email-chip" hidden></span>
+  </div>
+</header>
+
+<main class="wrap" id="main"></main>
+
+<script type="module" src="/assets/app.js"></script>
+</body>
+</html>

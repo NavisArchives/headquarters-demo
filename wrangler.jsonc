@@ -1,0 +1,52 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hq",
+  "main": "src/worker/index.js",
+  "compatibility_date": "2025-07-18",
+
+  // Load-bearing. Cloudflare Access protects the custom domain, not the
+  // Worker. With workers.dev enabled, the *.workers.dev address would serve
+  // the whole dashboard unauthenticated. Do not remove.
+  "workers_dev": false,
+
+  "assets": {
+    "directory": "./src/public",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    // Serve exactly the file asked for. The default auto-trailing-slash mode
+    // 307-redirects /index.html to /, which turns every page route into a redirect.
+    "html_handling": "none"
+  },
+
+  // Every id below is a placeholder: create your own with `wrangler kv namespace create`
+  // and `wrangler d1 create`, then paste the ids here.
+  "kv_namespaces": [
+    { "binding": "STATUS", "id": "REPLACE_ME" },
+    { "binding": "OPENS", "id": "REPLACE_ME" }
+  ],
+
+  // One database. `remote: true` makes `wrangler dev` use the live D1 instead of a
+  // local copy, so the Mac and the deployed site show the same data. Tests never
+  // read this: they run on a fake DB or their own Miniflare.
+  "d1_databases": [
+    { "binding": "DB", "database_name": "hq", "database_id": "REPLACE_ME", "remote": true }
+  ],
+
+  "vars": {
+    "ACCESS_TEAM": "",
+    "ACCESS_AUD": "",
+    "CF_ACCOUNT_ID": "REPLACE_ME",
+    "LEADS_SUMMARY_URL": "",
+    // The owner's own zone: « today » for due dates, follow-ups and invoice dates.
+    "HQ_TIME_ZONE": "America/Lima"
+  },
+
+  "routes": [
+    { "pattern": "hq.example.com", "custom_domain": true },
+    // The client onboarding page, on the studio's own domain. This host serves
+    // ONLY that page (live.js handleLiveHost): never HQ, never the login.
+    { "pattern": "onboarding.example.com", "custom_domain": true }
+  ],
+
+  "observability": { "enabled": true }
+}

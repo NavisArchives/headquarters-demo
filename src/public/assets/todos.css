@@ -1,0 +1,111 @@
+/* To-dos: Home's list, a mission's own list, and their two pop-ups.
+   Loaded once by ensureTodosCss() (todos.js). */
+
+/* ---- one line to add a to-do ---- */
+.td-add { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 6px; align-items: center; margin-bottom: 10px; }
+.td-add__title, .td-add__pick {
+  font: inherit; font-size: 13.5px; color: var(--ink); min-width: 0;
+  background: var(--soft-2); border: 1px solid var(--line-soft); border-radius: 10px;
+  padding: 0 11px; min-height: 36px;
+}
+.td-add__pick { font-family: var(--mono); font-size: var(--micro); color: var(--muted); cursor: pointer; white-space: nowrap; }
+.td-add__pick:hover { border-color: var(--line); color: var(--ink-2); }
+.td-add__pick.is-set { color: var(--green); border-color: var(--green-soft); }
+/* The real date field sits under its button, invisible, so the system picker
+   opens there; shown only where the browser cannot open the picker itself. */
+.td-add__due {
+  position: absolute; right: 60px; bottom: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none;
+  font: inherit; font-size: 13px; color: var(--ink); background: var(--soft-2); border: 1px solid var(--green); border-radius: 10px;
+}
+.td-add__due.is-shown { position: static; width: auto; height: 36px; opacity: 1; pointer-events: auto; grid-column: 1 / -1; order: 5; padding: 0 8px; }
+.td-add__title:focus-visible, .td-add__pick:focus-visible { outline: none; border-color: var(--green); }
+.td-add .btn.small { min-height: 36px; }
+.td-add.is-compact { margin: 8px 0 0; }
+.ms-todos .ms-text { justify-self: start; }
+
+/* ---- the rows ---- */
+.td-list { display: grid; gap: 6px; }
+.td-row {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center;
+  padding: 6px 10px 6px 8px; border-radius: 12px; background: var(--soft-2); border: 1px solid transparent;
+}
+.td-row:hover { border-color: var(--line); }
+.td-check {
+  /* A 40px target for a thumb; the circle inside it is what shows. */
+  width: 40px; height: 40px; margin: -4px -6px; padding: 0; flex: none; cursor: pointer;
+  border: 0; background: none; display: grid; place-items: center;
+}
+.td-check::before {
+  content: ''; grid-area: 1 / 1; width: 22px; height: 22px; box-sizing: border-box; border-radius: 50%;
+  border: 1.5px solid var(--muted); background: transparent;
+}
+.td-check:hover::before { border-color: var(--green); }
+.td-check.is-on::before { background: var(--green); border-color: var(--green); }
+.td-check.is-on::after { content: '✓'; grid-area: 1 / 1; color: var(--on-green); font-size: 13px; line-height: 1; font-weight: 700; }
+.td-check:disabled { opacity: .5; cursor: progress; }
+.td-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); margin: 0 9px; }
+.td-dot.is-bad { background: var(--red); }
+.td-text {
+  min-width: 0; display: grid; gap: 1px; padding: 5px 0; text-align: left; cursor: pointer;
+  font: inherit; color: var(--ink); background: none; border: 0;
+}
+.td-text b {
+  font-weight: 400; font-size: 13.5px; line-height: 1.35; overflow: hidden; overflow-wrap: anywhere;
+  /* Two lines, then an ellipsis: a to-do has to be readable at a glance. */
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+}
+.td-text small { font-size: var(--micro); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.td-text:hover b { color: var(--green); }
+.td-due {
+  font-family: var(--mono); font-size: var(--micro); white-space: nowrap;
+  min-height: 24px; padding: 0 9px; border-radius: 999px; display: grid; place-items: center;
+  background: var(--soft); color: var(--muted);
+}
+.td-due.soon, .td-due.today { background: var(--amber-soft); color: var(--amber); }
+.td-due.late { background: var(--red-soft); color: var(--red); }
+.td-row.is-done .td-text b { text-decoration: line-through; color: var(--muted); }
+
+/* ---- Home: the card ---- */
+.td-card .cta { justify-content: space-between; gap: 8px; }
+
+/* ---- a mission's own list ---- */
+.ms-todos { display: grid; gap: 6px; margin-top: 4px; }
+.ms-todos__head { margin: 0; font-family: var(--mono); font-size: var(--micro); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.ms-todos .td-row { background: var(--soft); }
+
+/* ---- the pop-ups ---- */
+.td-form__row { display: grid; grid-template-columns: minmax(0, 12em) minmax(0, 1fr); gap: 12px; }
+.td-form__row .field { margin-bottom: 18px; }
+.td-form__lead { margin: -6px 0 16px; font-size: 13px; color: var(--muted); }
+.td-form__acts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 18px; }
+.td-form__acts .td-del { margin-left: auto; color: var(--red); }
+.td-cal p { margin: 0 0 14px; font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+.td-cal__url { width: 100%; font-family: var(--mono); font-size: var(--micro); }
+.td-cal .td-cal__hint { margin: 16px 0 0; font-size: 13px; color: var(--muted); }
+.td-cal a.btn { text-decoration: none; }
+
+/* ---- the toast with Undo ---- */
+.td-toast {
+  position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 80;
+  display: flex; align-items: center; gap: 14px; max-width: calc(100vw - 32px);
+  background: var(--ink); color: var(--ground); border-radius: 999px; padding: 6px 6px 6px 18px; font-size: 13px;
+}
+.td-toast span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.td-toast button {
+  font: inherit; font-weight: 600; color: var(--ground); background: color-mix(in srgb, var(--ground) 18%, transparent);
+  border: 0; border-radius: 999px; padding: 0 14px; min-height: 32px; cursor: pointer; flex: none;
+}
+
+@media (max-width: 620px) {
+  .td-form__row { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
+
+/* On a phone every to-do control is a finger-sized target (44 px). */
+@media (max-width: 760px) {
+  .td-add__pick, .td-add .btn.small, .td-text { min-height: 44px; }
+}
+
+/* S3: a full tap size for the quick-add field and its date on a phone. */
+@media (max-width: 760px) {
+  .td-add__title, .td-add__pick { min-height: 44px; }
+}

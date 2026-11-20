@@ -1,0 +1,585 @@
+/* Projects — "Where to reach it".
+   Everything here rides the palette tokens defined in index.html — one dark
+   palette, no theme branch — so this file declares no colour of its own, and
+   no type smaller than --micro (12px), the shell's floor. Class names are
+   rx-* so nothing collides with the shell's stylesheet. */
+
+/* ---------- the four-row block ---------- */
+
+.rx-reach {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+.rx-row {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 8px 18px;
+  align-items: start;
+  padding: 14px 0;
+  border-top: 1px solid var(--line-soft);
+}
+.rx-row:first-child { border-top: 0; padding-top: 4px; }
+
+.rx-k {
+  font-family: var(--mono);
+  font-size: var(--micro);
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 3px;
+  white-space: nowrap;
+}
+
+.rx-v {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 7px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* A value line: the link or the plain truth, plus optional trailing pills. */
+.rx-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.rx-a {
+  color: var(--green);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  overflow-wrap: anywhere;
+  font-weight: 500;
+}
+.rx-a:hover, .rx-a:focus-visible { border-bottom-color: var(--green); }
+
+.rx-out {
+  font-family: var(--mono);
+  font-size: var(--micro);
+  letter-spacing: .1em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* The explicit absence. Never a blank row. */
+.rx-none {
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.rx-sub {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.rx-sub b { font-weight: 500; color: var(--ink-2); }
+
+/* ---------- copyable command chip ---------- */
+
+.rx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  min-width: 0;
+  font: inherit;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-2);
+  background: var(--soft-2);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-sm);
+  padding: 7px 10px;
+  cursor: pointer;
+}
+.rx-chip:hover, .rx-chip:focus-visible { border-color: var(--muted); color: var(--ink); }
+
+/* The command itself: one line, scrolling inside the chip rather than
+   wrapping mid-word (a path breaking after "PRODUC" or a quote splitting
+   across lines read as broken, not wrapped). COPY sits outside this
+   scroller, on a `flex: none` sibling, so it never scrolls out of reach. */
+.rx-chip .rx-cmd {
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+}
+.rx-chip .rx-cmd::-webkit-scrollbar { height: 5px; }
+.rx-chip .rx-cmd::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
+
+.rx-chip .rx-copy {
+  flex: none;
+  font-size: var(--micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- tools ---------- */
+
+/* grid-template-columns: minmax(0, 1fr) stops the implicit auto column from
+   sizing itself to the command chip's unwrapped max-content width (the chip
+   now scrolls its command instead of wrapping it — see .rx-cmd below — and
+   without this the whole page would widen to fit that scroller). */
+.rx-tools { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; }
+/* Compact links (3 Nov): a word per destination, the address on hover. */
+.rx-tchip {
+  display: inline-flex; align-items: center; min-height: 32px; padding: 4px 12px;
+  border: 1px solid var(--line-soft); border-radius: 999px; background: var(--soft-2);
+  color: var(--ink-2); text-decoration: none; font-size: 13px;
+}
+.rx-tchip:hover, .rx-tchip:focus-visible { border-color: var(--muted); color: var(--ink); }
+.rx-help { display: inline-block; position: relative; }
+.rx-help > summary {
+  list-style: none; cursor: pointer; display: inline-grid; place-items: center;
+  width: 22px; height: 22px; border-radius: 999px; border: 1px solid var(--line-soft);
+  color: var(--muted); font-size: 12px;
+}
+.rx-help > summary::-webkit-details-marker { display: none; }
+.rx-help[open] > summary { color: var(--ink); border-color: var(--muted); }
+/* Closed: nothing but the « ? ». Open: a small panel over the page, not in the flow. */
+.rx-help:not([open]) > .rx-helpbox { display: none; }
+.rx-help[open] { z-index: 5; }
+.rx-helpbox {
+  position: absolute; top: 28px; left: 0; width: min(46ch, 70vw); padding: 8px 12px;
+  display: grid; gap: 4px; background: var(--panel, var(--soft-2));
+  border: 1px solid var(--line-soft); border-radius: var(--r-sm); box-shadow: var(--shadow, none);
+}
+.rx-helpbox > .rx-sub { margin: 0; }
+.rx-tool { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; min-width: 0; }
+.rx-tool > .rx-t-name {
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.rx-tool > .rx-t-name span { color: var(--muted); font-weight: 400; }
+
+/* ---------- small link pills (cards, home rows) ---------- */
+
+.rx-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.rx-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 32px;
+  font-family: var(--mono);
+  font-size: var(--micro);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink-2);
+  background: var(--soft-2);
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  padding: 5px 12px;
+  white-space: nowrap;
+}
+.rx-pill:hover, .rx-pill:focus-visible {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--on-green);
+}
+.rx-pill.rx-ghost {
+  background: transparent;
+  color: var(--muted);
+  border-style: dashed;
+}
+
+/* ---------- not started ---------- */
+
+.rx-notstarted {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px dashed var(--line);
+  border-radius: var(--r-sm);
+  background: transparent;
+}
+.rx-notstarted h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.rx-notstarted p { margin: 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
+
+/* ---------- dated notes from a project's own session ---------- */
+
+.rx-notes { display: grid; gap: 10px; }
+.rx-note {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 12px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.rx-note time { font-family: var(--mono); font-size: var(--micro); padding-top: 2px; }
+
+/* ---------- kind label under a project title ---------- */
+
+.rx-kind {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: var(--micro);
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: -6px 0 0;
+}
+
+/* ---------- compact project rows (Headquarters home) ---------- */
+
+.rx-prows { display: grid; gap: 2px; }
+
+.rx-prow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  border: 0;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+.rx-prow:hover { background: var(--soft-2); }
+.rx-pname {
+  font-size: 14px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.rx-pname button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+}
+.rx-pname button:hover { color: var(--green); }
+.rx-pname small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 1px;
+}
+.rx-group + .rx-group { margin-top: 16px; }
+.rx-group > .rx-gtitle {
+  font-family: var(--mono);
+  font-size: var(--micro);
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 6px;
+  padding: 0 12px;
+}
+
+@media (max-width: 560px) {
+  .rx-row { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 12px 0; }
+  .rx-k { padding-top: 0; }
+  .rx-prow { grid-template-columns: auto minmax(0, 1fr); row-gap: 8px; }
+  .rx-prow > .rx-pills { grid-column: 2 / -1; }
+}
+
+/* Phone: nothing you tap is under 40px — the shell's rule, applied to the
+   two controls this file introduces. */
+@media (max-width: 480px) {
+  .rx-pill { min-height: 40px; padding: 8px 14px; }
+  .rx-pname button { min-height: 40px; }
+  .rx-chip { min-height: 40px; }
+  /* The URL in each row is the main thing a thumb goes for. */
+  .rx-a { display: inline-flex; align-items: center; min-height: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rx-a, .rx-pill, .rx-chip { transition: none; }
+}
+
+/* ---------- the two columns under the reach block ----------
+   Each column packs its cards at the top. Without this a column with one
+   card stretches that card to the height of the other column, and the
+   Status card becomes a mostly-empty box taller than everything it holds. */
+.rx-columns > .grid { align-content: start; }
+
+/* ---------- the project page's own stack ----------
+   The detail page is one `.grid`, so every block on it is separated by the
+   shell's --gap — the Money card included, which used to sit flush against
+   the two columns beneath it because the blocks were plain siblings of #main
+   with no spacing of their own. */
+/* .rx-detail already gets its column from the shell's `.grid` rule
+   (grid-template-columns: minmax(0, 1fr)) — it only adds align-content
+   here. */
+.rx-detail { align-content: start; }
+
+/* Back link, title and kind are one row of that stack: the gap belongs
+   between the title block and the first card, not inside the title. */
+.rx-head > .hero { padding-block: 18px 8px; }
+
+/* ---------- Local services: the row that starts and stops one ----------
+   The card is a column of service blocks; each block is a heading line, a
+   row of buttons, the API's own words when it refuses, an optional log box,
+   and the command as the fallback that always works. */
+.service-block + .service-block { margin-top: 18px; }
+.svc-state {
+  font-family: var(--mono);
+  font-size: var(--micro);
+  letter-spacing: .04em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.svc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.svc-actions:empty { display: none; }
+/* `Open` is an anchor wearing the button's clothes. */
+.svc-actions a.btn { text-decoration: none; }
+.svc-msg {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+.svc-msg:empty { display: none; margin: 0; }
+.svc-logs { margin-bottom: 8px; }
+.svc-logs:empty { display: none; }
+.svc-logs > .btn { margin-bottom: 8px; }
+.svc-logs > pre {
+  margin: 0;
+  max-height: 260px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+.service-block > .rx-sub { margin-bottom: 6px; }
+
+@media (max-width: 480px) {
+  .svc-actions .btn, .svc-logs .btn { min-height: 40px; }
+}
+
+
+/* ---------- the compact project page ---------- */
+.rx-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.rx-strip .rx-row {
+  grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 14px 16px; border-top: 0;
+  align-content: start; background: var(--soft-2); border-radius: 14px;
+}
+.rx-strip .rx-none { margin: 0; }
+.rx-strip .rx-row:first-child { padding-top: 14px; }
+.rx-strip .rx-k { padding-top: 0; }
+.rx-strip .rx-v { font-size: 13.5px; gap: 5px; }
+.rx-strip .rx-sub { font-size: var(--micro); }
+.rx-toolsrow { margin-top: 12px; }
+.rx-toolsrow .rx-row { grid-template-columns: 104px minmax(0, 1fr); padding: 12px 0 0; border-top: 1px solid var(--line-soft); }
+.rx-toolsrow .rx-tools { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.rx-toolsrow .rx-tool { flex: 1 1 260px; min-width: 0; }
+.rx-toolsrow .rx-t-name { font-size: 13px; }
+.rx-toolsrow .rx-t-name span { color: var(--muted); }
+.rx-facts { display: flex; flex-wrap: wrap; gap: 8px; }
+.rx-fact { display: grid; gap: 4px; padding: 10px 12px; border-radius: 10px; background: var(--soft-2); min-width: 120px; }
+.rx-fact .rx-k { padding-top: 0; }
+.rx-fact .value { margin: 0; font-size: 14px; }
+.rx-missions { display: grid; gap: 4px; }
+.rx-mission { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 10px; background: var(--soft-2); font-size: 13.5px; }
+.rx-mstatus { font-style: normal; font-family: var(--mono); font-size: var(--micro); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.rx-mstatus.s-in_progress { color: var(--green); } .rx-mstatus.s-blocked { color: var(--red); } .rx-mstatus.s-done { color: var(--muted); }
+.rx-columns .field textarea { min-height: 96px; }
+@media (max-width: 860px) {
+  .rx-strip { grid-template-columns: minmax(0, 1fr); }
+  .rx-toolsrow .rx-row { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- the order on a project page ---------- */
+.ord-figs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.ord-fig { display: grid; gap: 2px; padding: 10px 12px; border-radius: 10px; background: var(--soft-2); min-width: 108px; }
+.ord-fig b { font-size: 19px; font-weight: 400; letter-spacing: -.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+.ord-fig span { font-size: var(--micro); color: var(--muted); }
+.ord-fig.is-due b { color: var(--amber); }
+.ord-lines { display: grid; gap: 4px; }
+.ord-line { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 10px; background: var(--soft-2); }
+.ord-line__text { min-width: 0; display: grid; }
+.ord-line__text b { font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ord-line__text small { font-family: var(--mono); font-size: var(--micro); color: var(--muted); }
+.ord-rate { font-size: 14px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ord-rate.k-monthly { color: var(--green); }
+.ord-rate.k-daily { color: var(--green-deep); }
+.ord-x { font: inherit; font-size: 12px; color: var(--muted); background: none; border: 0; cursor: pointer; padding: 4px; border-radius: 6px; }
+.ord-x:hover { color: var(--red); background: var(--red-soft); }
+.ord-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.ord-entries { margin-top: 14px; border-top: 1px solid var(--line-soft); padding-top: 10px; }
+.ord-entries__head { margin: 0 0 6px; font-family: var(--mono); font-size: var(--micro); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.ord-entry { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; align-items: baseline; padding: 5px 0; font-size: 13px; }
+.ord-entry__what { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ord-entry__when { font-family: var(--mono); font-size: var(--micro); color: var(--muted); white-space: nowrap; }
+.ord-entry__sum { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ord-form { display: grid; gap: 12px; }
+@media (max-width: 620px) { .ord-line { grid-template-columns: minmax(0, 1fr) auto; } .ord-x { grid-column: 2; } }
+.ord-list { display: grid; gap: 4px; }
+/* The empty Orders tab reads like the other empty states: body font, full width (NIRMATA F2, 28 Oct). */
+.ord-empty { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+.ord-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 10px; background: var(--soft-2); border: 1px solid transparent; font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
+.ord-row:hover { border-color: var(--green); }
+.ord-row__text { display: grid; min-width: 0; }
+.ord-row__text b { font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ord-row__text small { font-size: var(--micro); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ord-row__when { font-family: var(--mono); font-size: var(--micro); color: var(--muted); }
+
+/* Lab versions under the Local address: one path each on the same server. */
+.rx-labs { display: grid; gap: 2px; margin-top: 6px; }
+.rx-lab { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; min-width: 0; }
+.rx-lab .rx-k { font-family: var(--mono); font-size: var(--micro); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); min-width: 64px; }
+.rx-lab .rx-a { overflow-wrap: anywhere; }
+.rx-line > .dot { flex: none; }
+
+/* A client's onboarding on his project page (0021). */
+.rx-onboarding { display: grid; gap: 10px; }
+.rx-onb { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.rx-onb > div { display: grid; gap: 2px; min-width: 0; }
+.rx-onb small { color: var(--muted); }
+.rx-onb__acts { display: flex; gap: 8px; flex: none; }
+
+/* The project page's one row (3 Nov): a word per destination, no card. */
+.rx-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; min-height: 32px; }
+.rx-bar .rx-v, .rx-bar .rx-line, .rx-bar .rx-labs, .rx-bar .rx-lab, .rx-bar .rx-tools {
+  display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; margin: 0;
+}
+.rx-bar .rx-v { gap: 8px 12px; font-size: 14px; }
+.rx-pair { align-items: stretch; }
+.rx-pair > .card { height: 100%; }
+.ord-start { margin-top: 10px; }
+
+/* A project card's title is its link: it reads as the title (axe, 14 Nov). */
+.pcard h3 .pcard__open { color: inherit; text-decoration: none; }
+.pcard h3 .pcard__open:hover, .pcard h3 .pcard__open:focus-visible { color: var(--green); }
+/* Every quiet link is a 24 px target at least (WCAG 2.2 target size); the chips that
+   are buttons keep their own shape. On a phone the 40 px rule above wins. */
+@media (min-width: 481px) { a.rx-a { min-height: 24px; display: inline-flex; align-items: center; } }
+/* The « ? » next to a fact: a finger-sized target on a phone. */
+@media (max-width: 480px) { .rx-help > summary { width: 40px; height: 40px; } }
+
+/* A project page on a desktop: the title stays, the rest scrolls inside the
+   screen, as on the phone and the project list (S1: 19px over at 1280×720).
+   From 1101px only: between tablet and laptop the link row wraps and the
+   page keeps its own scroll. */
+@media (min-width: 1101px) {
+  #main > .page-frame.rx-detail { height: calc(100dvh - 104px); min-height: 0; grid-template-rows: auto minmax(0, 1fr); }
+  .page-frame.rx-detail > .page-body { display: grid; gap: var(--gap); align-content: start; min-height: 0; overflow: auto; padding-bottom: 16px; }
+}
+/* S2: on a phone the project name is a full-size tap target. */
+@media (max-width: 760px) {
+  .pcard h3 .pcard__open { display: inline-flex; align-items: center; min-height: 44px; }
+}
+
+/* ---------- Projects | Platforms (20 Nov) ----------
+   Two tabs. The open one shows; the page body stays the one region that scrolls. */
+.projects-list > .pj-seg { flex-shrink: 0; margin: 4px 0 12px; }
+.projects-list[data-seg="projects"] .pf-pane,
+.projects-list[data-seg="platforms"] .pj-pane { display: none; }
+
+.pf-pane { display: flex; flex-direction: column; min-height: 0; }
+.pf-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; margin-bottom: 12px; }
+.pf-count { margin: 0; font-size: 13px; color: var(--muted); }
+
+.pf-list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px; align-content: start; /* a grid row stretches its cards to one height */
+}
+.pf-empty { grid-column: 1 / -1; list-style: none; color: var(--muted); }
+
+.pf-row {
+  display: flex; flex-direction: column; gap: 3px; min-width: 0;
+  background: var(--card); border: 1px solid var(--line-soft); border-radius: 12px; padding: 9px 12px;
+}
+.pf-controls { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.pf-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
+.pf-title { font-size: 14.5px; color: var(--ink); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf-sub { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
+.pf-where { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; color: var(--muted); }
+.pf-link { color: var(--ink-2); text-decoration: none; }
+.pf-link:hover { color: var(--ink); text-decoration: underline; }
+.pf-when { font-size: 12px; color: var(--muted); }
+
+/* Small to the eye, 44 px to the finger on a phone (F3): the hit area grows
+   above and below the pill and Edit, which sit side by side, so they never overlap. */
+.pf-status, .pf-edit { position: relative; flex-shrink: 0; }
+.pf-status__select {
+  position: relative; appearance: none; -webkit-appearance: none; font: inherit; font-size: 12px; cursor: pointer;
+  border-radius: 999px; padding: 3px 22px 3px 9px; min-height: 26px;
+  border: 1px solid var(--line); background: var(--soft-2); color: var(--ink-2);
+}
+.pf-status::after {
+  content: '▾'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  font-size: 10px; color: var(--muted); pointer-events: none;
+}
+.pf-status__select:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.pf-s--now .pf-status__select { background: var(--amber-soft); border-color: var(--amber); color: var(--ink); }
+.pf-s--live .pf-status__select { background: var(--green-soft); border-color: var(--green); color: var(--ink); }
+.pf-s--off .pf-status__select { border-style: dashed; color: var(--muted); }
+.pf-edit {
+  font: inherit; font-size: 12.5px; color: var(--ink-2); background: none; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; min-height: 26px;
+}
+.pf-edit:hover { color: var(--ink); border-color: var(--muted); }
+.pf-edit:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+.pf-facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; margin: 2px 0 0; font-size: 13px; line-height: 1.35; }
+.pf-facts dt {
+  font-family: var(--mono); font-size: var(--micro); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); padding-top: 1px;
+}
+.pf-facts dd { margin: 0; color: var(--ink-2); overflow-wrap: anywhere; }
+
+/* The editor: three rows of fields on a wide screen, and the buttons stick to
+   the bottom, so Save is on screen at every size (F2). */
+.pf-editor { padding: 18px 22px 0; }
+.pf-form { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); column-gap: 14px; }
+.pf-editor .field { margin: 6px 0; }
+.pf-form .pf-f-name, .pf-form .pf-f-url, .pf-form .pf-f-status, .pf-form .pf-f-pay { grid-column: span 2; }
+.pf-form .pf-f-next_step { grid-column: span 4; }
+.pf-form .pf-f-note, .pf-form .pf-actions { grid-column: 1 / -1; }
+.pf-actions {
+  display: flex; gap: 8px; justify-content: space-between; flex-wrap: wrap;
+  position: sticky; bottom: 0; background: var(--card); padding: 8px 0 14px; margin-top: 4px;
+}
+.pf-remove { color: var(--red); }
+
+@media (max-width: 760px) {
+  .pf-list { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .pf-form { grid-template-columns: minmax(0, 1fr); }
+  .pf-form > * { grid-column: 1 / -1 !important; }
+  /* Visually 32 px; the ::before below keeps the 44 px tap area HQ's phone rule asks for. */
+  #main .pf-row .pf-edit, #main .pf-row .pf-status__select { min-height: 32px !important; }
+  .pf-status::before, .pf-edit::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%); }
+}
+@media (max-width: 760px) {
+  .pj-pane { display: flex; flex-direction: column; gap: var(--gap); }
+  .pj-pane > * { flex-shrink: 0; }
+}

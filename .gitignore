@@ -1,0 +1,19 @@
+node_modules/
+.wrangler/
+dist/
+.dev.vars
+.claude/launch.json
+
+.DS_Store
+modules/leads/.gmail/
+.online-password
+*.log
+__pycache__/
+HQ.app/
+modules/leads/deploy/.hq-secret
+modules/leads/deploy/.wrangler/
+tools/desktop/build/
+.secrets/
+
+# the service worker manifest: written per release, never committed
+src/public/asset-manifest.json

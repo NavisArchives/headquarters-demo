@@ -1,0 +1,289 @@
+[
+  {
+    "slug": "kestrel-studio",
+    "name": "Kestrel Studio",
+    "kind": "business",
+    "description": "Trilingual portfolio and lead-generation site for the studio itself.",
+    "stack": "Astro · Cloudflare Workers assets",
+    "status": {
+      "probe": "http",
+      "url": "https://example.com/kestrel"
+    },
+    "links": {
+      "live": {
+        "url": "https://example.com/kestrel",
+        "label": "www redirects to the apex"
+      },
+      "local": {
+        "url": "http://localhost:4321",
+        "service": "site",
+        "note": "package.json pins 4321"
+      },
+      "tools": [
+        {
+          "name": "Deploy",
+          "command": "npm run deploy",
+          "purpose": "Build, then publish. Publishes live."
+        },
+        {
+          "name": "Tests",
+          "command": "npm test",
+          "purpose": "Page, link and asset checks — a run, not a service."
+        }
+      ]
+    },
+    "deploy": "npm run deploy",
+    "note": "Copy for all three languages lives in src/i18n/; a missing key fails the build.",
+    "local": {
+      "path": "/home/demo/sites/kestrel-studio",
+      "services": [
+        {
+          "id": "site",
+          "label": "Site",
+          "run": [
+            "npm",
+            "run",
+            "dev"
+          ],
+          "port": 4321,
+          "lab": [
+            {
+              "label": "V1",
+              "path": "/lab/v1/"
+            },
+            {
+              "label": "V2",
+              "path": "/lab/v2/"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "slug": "fieldnote",
+    "name": "Fieldnote",
+    "kind": "business",
+    "description": "Creator portfolio — video carousel, justified photo gallery, brand marquee.",
+    "stack": "Static HTML/JS · Cloudflare Workers assets",
+    "status": {
+      "probe": "http",
+      "url": "https://example.com/fieldnote",
+      "extra": [
+        {
+          "id": "admin",
+          "label": "Admin",
+          "probe": "http",
+          "url": "https://example.com/fieldnote-admin",
+          "method": "GET",
+          "expect": [
+            401
+          ]
+        }
+      ]
+    },
+    "links": {
+      "live": {
+        "url": "https://example.com/fieldnote",
+        "label": "www redirects to the apex"
+      },
+      "admin": {
+        "url": "https://example.com/fieldnote-admin",
+        "how": "a tunnel to this Mac",
+        "auth": "password only",
+        "note": "opens in a new tab; never embedded"
+      },
+      "local": {
+        "url": "http://localhost:4173",
+        "command": "python3 -m http.server 4173",
+        "cwd": "/home/demo/sites/fieldnote",
+        "note": "serves the source folder, not the built site"
+      },
+      "tools": [
+        {
+          "name": "Build",
+          "command": "./build.sh",
+          "purpose": "Assembles dist/, picking up new videos."
+        },
+        {
+          "name": "Deploy",
+          "command": "npx wrangler deploy",
+          "purpose": "Publishes dist/. Run ./build.sh first."
+        }
+      ]
+    },
+    "deploy": "./build.sh && npx wrangler deploy",
+    "note": "The admin reaches this Mac through a tunnel; it answers only while that tunnel is running."
+  },
+  {
+    "slug": "arbor",
+    "name": "Arbor",
+    "kind": "business",
+    "description": "Shared reading list for small teams. Web app plus a marketing site.",
+    "stack": "React · Workers · D1",
+    "status": {
+      "probe": "http",
+      "url": "https://example.com/arbor",
+      "extra": [
+        {
+          "id": "app",
+          "label": "App",
+          "probe": "http",
+          "url": "https://example.com/arbor-app",
+          "method": "GET",
+          "expect": [
+            200
+          ]
+        }
+      ]
+    },
+    "links": {
+      "live": {
+        "url": "https://example.com/arbor",
+        "label": "marketing site"
+      },
+      "admin": [
+        {
+          "url": "https://example.com/arbor-app",
+          "label": "Workspace",
+          "how": "a route in the same site",
+          "auth": "a session cookie"
+        },
+        {
+          "url": "https://example.com/arbor-owner",
+          "label": "Owner console",
+          "how": "a route in the same site",
+          "auth": "owner only"
+        }
+      ],
+      "local": {
+        "url": "http://localhost:5173",
+        "command": "npm run dev",
+        "cwd": "/home/demo/sites/arbor",
+        "note": "Vite on 5173"
+      },
+      "tools": [
+        {
+          "name": "Deploy",
+          "command": "npm run deploy",
+          "purpose": "Builds and publishes both the site and the app."
+        }
+      ]
+    },
+    "deploy": "npm run deploy",
+    "note": "One database behind both the site and the workspace."
+  },
+  {
+    "slug": "aubry",
+    "name": "Dr Marlène Aubry",
+    "kind": "client",
+    "description": "Rebuild of a dermatology practice site, with an editor for procedure content.",
+    "stack": "Astro · local only",
+    "status": {
+      "probe": "http",
+      "url": "https://example.com/aubry"
+    },
+    "links": {
+      "live": {
+        "url": "https://example.com/aubry",
+        "label": "the practice's site"
+      },
+      "admin": {
+        "url": "http://127.0.0.1:4100",
+        "how": "npm run edit",
+        "auth": "none — loopback only",
+        "local_only": true
+      },
+      "local": {
+        "url": "http://localhost:4330",
+        "command": "npm run dev -- --port 4330",
+        "cwd": "/home/demo/sites/aubry",
+        "note": "4321 when started from the repo itself"
+      },
+      "tools": [
+        {
+          "name": "Checks",
+          "command": "npm run check && npm test",
+          "purpose": "Type check, then the page and link tests."
+        }
+      ]
+    },
+    "deploy": "npm run deploy",
+    "note": "French is the source language; English published, Dutch in draft."
+  },
+  {
+    "slug": "vermeer",
+    "name": "Vermeer & Co",
+    "kind": "client",
+    "description": "Architecture practice portfolio: projects, team, contact.",
+    "stack": "Wix (Editor) · Wix CMS",
+    "status": {
+      "probe": "http",
+      "url": "https://example.com/vermeer"
+    },
+    "links": {
+      "live": {
+        "url": "https://example.com/vermeer",
+        "label": "custom domain"
+      },
+      "admin": {
+        "url": "https://example.com/vermeer-admin",
+        "how": "the site builder's dashboard",
+        "auth": "the studio account",
+        "note": "one editor session at a time"
+      }
+    },
+    "hosted": "A hosted site builder — no local server, no repo",
+    "note": "Client site; a rebuild is possible later but undecided."
+  },
+  {
+    "slug": "tidebank",
+    "name": "Tidebank archive",
+    "kind": "prospect",
+    "description": "Archived site plus a working CMS: entries, media library, version history.",
+    "stack": "Python 3 standard library · local only",
+    "status": {
+      "probe": "local"
+    },
+    "links": {
+      "admin": {
+        "url": "http://localhost:3017/admin",
+        "how": "the same server serves the site and the CMS",
+        "auth": "password generated on first start",
+        "local_only": true
+      },
+      "local": {
+        "url": "http://localhost:3017",
+        "service": "site",
+        "note": "one process, two paths"
+      },
+      "tools": [
+        {
+          "name": "Scraper",
+          "command": "python3 scripts/scrape.py",
+          "purpose": "Re-crawls the source site into content/site.json. The real site is never modified."
+        },
+        {
+          "name": "Tests",
+          "command": "python3 -m unittest discover -s tests -v",
+          "purpose": "The whole verification suite."
+        }
+      ]
+    },
+    "note": "Nothing is deployed: the archive and its CMS run on this Mac only.",
+    "local": {
+      "path": "/home/demo/sites/tidebank",
+      "services": [
+        {
+          "id": "site",
+          "label": "Site and CMS",
+          "run": [
+            "python3",
+            "server.py"
+          ],
+          "port": 3017
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,237 @@
+/* The onboarding questionnaire: the studio's own look (realisstudio.com) —
+   white, square, mono — inside HQ and, in safe view, as the whole page.
+   Its own tokens, so HQ's dark palettes never reach it. */
+
+.ob {
+  --ob-bg: #ffffff;
+  --ob-ink: #111111;
+  --ob-muted: #6b7280;
+  --ob-soft: #9ca3af;
+  --ob-line: #e5e7eb;
+  --ob-band: #f3f4f6;
+  --ob-mono: ui-monospace, SFMono-Regular, Menlo, 'IBM Plex Mono', monospace;
+  --ob-sans: 'Geist Variable', Geist, 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: light;
+  background: var(--ob-bg);
+  color: var(--ob-ink);
+  font-family: var(--ob-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  border: 1px solid var(--ob-line);
+}
+
+/* ---- the top bar ---- */
+.ob {
+  /* One measure for the bar and the body, centred: no dead right half on a wide screen. */
+  --ob-max: 1180px;
+  --ob-side: max(28px, calc((100% - var(--ob-max)) / 2 + 28px));
+}
+.ob-top {
+  position: sticky; top: 0; z-index: 5;
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 24px;
+  padding: 18px var(--ob-side); background: var(--ob-bg); border-bottom: 1px solid var(--ob-line);
+}
+.ob-brand { display: grid; gap: 3px; white-space: nowrap; }
+.ob-brand b { font-family: var(--ob-mono); font-weight: 700; letter-spacing: .14em; font-size: 13px; }
+.ob-brand small { font-size: 13px; color: var(--ob-muted); }
+.ob-heading { display: grid; min-width: 0; }
+.ob-title { padding: 48px 0 8px; }
+.ob-title h1 { margin: 0; font-family: var(--ob-sans); font-weight: 300; font-size: clamp(34px, 3.6vw, 52px); letter-spacing: -.035em; line-height: 1.05; }
+.ob-title p { margin: 10px 0 0; font-size: 18px; color: var(--ob-muted); }
+.ob-heading b { font-family: var(--ob-sans); font-weight: 400; font-size: 18px; letter-spacing: -.01em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ob-tools { display: flex; align-items: center; gap: 12px; }
+.ob-lang { display: inline-grid; grid-auto-flow: column; border: 1px solid var(--ob-ink); }
+.ob-lang button {
+  font: inherit; font-size: 13px; letter-spacing: .04em; min-width: 40px; min-height: 34px; padding: 0 8px;
+  background: var(--ob-bg); color: var(--ob-ink); border: 0; cursor: pointer;
+}
+.ob-lang button[aria-pressed="true"] { background: var(--ob-ink); color: var(--ob-bg); }
+.ob-save { font-size: 13px; color: var(--ob-muted); white-space: nowrap; min-width: 0; transition: opacity .4s; }
+.ob-save.is-idle { opacity: 0; }
+.ob-save.is-saved { color: #15803d; opacity: 1; }
+.ob-save.is-failed { color: #b42318; opacity: 1; }
+.ob-ghost, .ob-present {
+  font: inherit; font-size: 13px; letter-spacing: .02em; min-height: 36px; padding: 0 14px; cursor: pointer; white-space: nowrap;
+}
+.ob-ghost { background: var(--ob-bg); color: var(--ob-ink); border: 1px solid var(--ob-line); }
+.ob-ghost:hover { border-color: var(--ob-ink); }
+.ob-present { background: var(--ob-ink); color: var(--ob-bg); border: 1px solid var(--ob-ink); text-transform: uppercase; }
+.ob-present:hover { background: #333; }
+
+/* Inside HQ, HQ's own top bar is the sticky one. */
+.ob:not(.is-safe) .ob-top { position: static; }
+.ob:not(.is-safe) .ob-steps { top: 100px; }
+
+/* ---- the steps beside the sections ---- */
+.ob-body { display: grid; grid-template-columns: 240px minmax(0, 1fr); align-items: start; max-width: var(--ob-max); margin: 0 auto; }
+.ob-steps {
+  position: sticky; top: 72px; display: grid; gap: 2px; padding: 32px 0 24px 0;
+  max-height: calc(100vh - 80px); overflow: auto;
+}
+.ob-steps a {
+  display: block; padding: 8px 12px; color: var(--ob-muted); text-decoration: none; font-size: 14.5px;
+  border-left: 2px solid transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ob-steps a:hover { color: var(--ob-ink); border-left-color: var(--ob-line); }
+.ob-steps a.is-done { color: var(--ob-ink); }
+.ob-steps a.is-done::after { content: ' ✓'; color: #16a34a; }
+.ob-steps .ob-steps__sum { margin-top: 10px; }
+/* The section being read: the first one when the questionnaire opens. */
+.ob-steps a.is-current { color: var(--ob-ink); border-left-color: var(--ob-ink); }
+.ob-step__num { font-family: var(--ob-mono); font-size: 12px; margin-right: 10px; color: var(--ob-soft); }
+.ob-steps a.is-done .ob-step__num { color: var(--ob-muted); }
+.ob-meter { padding: 14px 12px 0; font-size: 13px; color: var(--ob-muted); }
+
+/* ---- the sections ---- */
+.ob-form { padding: 8px 48px 120px; border-left: 1px solid var(--ob-line); min-width: 0; max-width: 860px; }
+.ob-sec { padding: 44px 0 40px; border-bottom: 1px solid var(--ob-line); scroll-margin-top: 80px; }
+.ob-sec__head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px; }
+.ob-sec h2 { margin: 0; font-family: var(--ob-sans); font-weight: 300; font-size: clamp(24px, 2.4vw, 32px); letter-spacing: -.03em; line-height: 1.15; }
+.ob-intro { margin: 8px 0 0; color: var(--ob-muted); max-width: 60ch; font-family: var(--ob-sans); font-size: 16px; line-height: 1.55; }
+.ob-field { margin: 28px 0 0; }
+/* The question, as it is asked: sentence case, readable, the middle step between the section title and the answers. */
+.ob-label { margin: 0 0 12px; font-family: var(--ob-sans); font-size: 17px; line-height: 1.4; color: var(--ob-ink); letter-spacing: -.005em; }
+.ob-muted { margin: 0; color: var(--ob-muted); }
+.ob-hint { margin: -6px 0 12px; color: var(--ob-muted); font-size: 15px; }
+.ob-field[hidden] { display: none; }
+/* An option with a line under it: a card, wide enough to read the line. */
+.ob-opt.has-desc { display: grid; gap: 4px; align-content: center; padding: 12px 18px; max-width: 360px; }
+.ob-opt.has-desc b { font-weight: 500; }
+.ob-opt.has-desc small { font-size: 13.5px; line-height: 1.4; color: var(--ob-muted); }
+.ob-opt.has-desc[aria-pressed="true"] small { color: #d1d5db; }
+
+/* one tap = one choice; big enough for a finger on an iPad */
+.ob-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.ob-opt {
+  font: inherit; font-size: 15px; color: var(--ob-ink); background: var(--ob-bg);
+  border: 1px solid var(--ob-line); min-height: 48px; padding: 0 18px; cursor: pointer; text-align: left;
+  transition: background .12s, border-color .12s, color .12s;
+}
+.ob-opt:hover { border-color: var(--ob-ink); }
+.ob-opt[aria-pressed="true"] { background: var(--ob-ink); border-color: var(--ob-ink); color: var(--ob-bg); }
+.ob-opts.is-small .ob-opt { min-height: 42px; padding: 0 14px; font-size: 14.5px; }
+.ob-opt:focus-visible, .ob-lang button:focus-visible, .ob-input:focus-visible, .ob-steps a:focus-visible, .hold:focus-visible {
+  outline: 2px solid var(--ob-ink); outline-offset: 2px; border-radius: 0;
+}
+.ob-input {
+  display: block; width: 100%; max-width: 640px; font-family: var(--ob-sans); font-size: 16px; color: var(--ob-ink);
+  background: var(--ob-bg); border: 1px solid var(--ob-line); border-radius: 0; padding: 12px 14px; min-height: 48px;
+}
+textarea.ob-input { resize: vertical; line-height: 1.55; }
+.ob-input:focus { outline: none; border-color: var(--ob-ink); }
+
+/* social media: one row per business */
+.ob-social-list { display: grid; gap: 0; border-top: 1px solid var(--ob-line); }
+.ob-social { display: grid; gap: 12px; padding: 20px 0; border-bottom: 1px solid var(--ob-line); }
+.ob-social__line { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 16px; align-items: center; }
+.ob-social__label { font-family: var(--ob-sans); font-size: 15px; color: var(--ob-muted); }
+.ob-social__name { font-family: var(--ob-sans); font-weight: 500; font-size: 17px; }
+
+/* the summary */
+.ob-sec--summary { border-bottom: 0; }
+.ob-summary { display: grid; gap: 24px; margin: 20px 0 0; }
+.ob-sum-group h3 { margin: 0 0 10px; font-family: var(--ob-sans); font-size: 17px; font-weight: 500; letter-spacing: -.005em; }
+.ob-sum-group dl { display: grid; grid-template-columns: minmax(150px, 230px) minmax(0, 1fr); gap: 8px 24px; margin: 0; font-family: var(--ob-sans); font-size: 16px; line-height: 1.5; }
+.ob-sum-group dt { color: var(--ob-muted); font-size: 15px; }
+.ob-sum-group dd { margin: 0; overflow-wrap: anywhere; }
+
+/* ---- safe view: the questionnaire is the whole page ---- */
+html.safe-view, html.safe-view body { background: #ffffff; }
+html.safe-view .topbar, html.safe-view footer.nb, html.safe-view .toast:empty { display: none !important; }
+html.safe-view #main { max-width: none; padding: 0; margin: 0; }
+.ob.is-safe { border: 0; min-height: 100vh; }
+
+/* hold to leave: quiet, in a corner, and useless as a tap */
+.hold {
+  position: relative; overflow: hidden; font: inherit; cursor: pointer; user-select: none; -webkit-user-select: none;
+  -webkit-touch-callout: none; touch-action: none;
+}
+.hold__fill { position: absolute; inset: 0; transform: scaleX(0); transform-origin: left; background: currentColor; opacity: .14; transition: transform 0s linear; }
+.hold.is-holding .hold__fill { transform: scaleX(1); transition-property: transform; }
+.hold span { position: relative; }
+.ob-leave {
+  font-size: 13px; color: var(--ob-muted);
+  background: var(--ob-bg); border: 1px solid var(--ob-line); min-height: 36px; padding: 0 14px; margin-left: 6px;
+}
+/* The screen's own error page (app.js) has no top bar: there it sits in a corner. */
+#main > .ob-leave { position: fixed; left: 20px; bottom: 20px; z-index: 20; }
+.ob-leave:hover { color: var(--ob-ink); border-color: var(--ob-ink); }
+
+/* ---- phone: the steps become a strip under the top bar (the side list stays down to a tablet: F31) ---- */
+@media (max-width: 760px) {
+  .ob-top { padding: 14px 20px; gap: 6px 18px; }
+  .ob-form { max-width: none; }
+  .ob-body { grid-template-columns: minmax(0, 1fr); }
+  .ob-steps {
+    position: sticky; top: 0; z-index: 4; display: flex; gap: 0; padding: 0 40px 0 12px; max-height: none;
+    overflow-x: auto; overflow-y: hidden; background: var(--ob-bg); border-bottom: 1px solid var(--ob-line); scrollbar-width: none;
+    scroll-snap-type: x proximity; scroll-padding-left: 12px;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 56px), transparent);
+  }
+  .ob-steps::-webkit-scrollbar { display: none; }
+  .ob-steps a { border-left: 0; border-bottom: 2px solid transparent; padding: 13px 12px; flex: none; scroll-snap-align: start; }
+  .ob-steps .ob-steps__sum { margin-top: 0; }
+  .ob-steps a.is-current { border-bottom-color: var(--ob-ink); }
+  .ob-meter { display: none; }
+  .ob-form { border-left: 0; padding: 0 24px 120px; }
+  .ob-sec { scroll-margin-top: 60px; }
+}
+@media (max-width: 760px) {
+  /* On a narrow screen the bar (Quitter) stays on screen, the steps right under it. */
+  .ob.is-safe .ob-top { position: sticky; top: 0; }
+  .ob.is-safe .ob-steps { top: var(--ob-top-h, 76px); }
+  .ob:not(.is-safe) .ob-steps { position: static; }
+}
+@media (max-width: 760px) {
+  .ob-top { grid-template-columns: auto minmax(0, 1fr); }
+  .ob-tools { grid-column: 1 / -1; justify-content: flex-end; flex-wrap: wrap; }
+}
+@media (max-width: 620px) {
+  .ob-top { grid-template-columns: minmax(0, 1fr); }
+  .ob-tools { justify-content: flex-start; flex-wrap: wrap; }
+  .ob-form { padding: 0 16px 120px; }
+  .ob-sum-group dl { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .ob-sum-group dd { margin-bottom: 8px; }
+  .ob-social__line { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hold.is-holding .hold__fill { transition-duration: 0s !important; }
+}
+
+/* Example videos (Inspiration réseaux sociaux): portrait, side by side. */
+.ob-media { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 18px; }
+.ob-media__item { margin: 0; display: grid; gap: 6px; }
+.ob-media__item video, .ob-media__item img { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; background: var(--ob-band); display: block; }
+.ob-media__link { display: grid; color: var(--ob-ink); text-decoration: none; border: 1px solid var(--ob-line); }
+.ob-media__link span { padding: 10px 12px; font-size: 14px; }
+.ob-media__item figcaption { font-size: 13.5px; color: var(--ob-muted); }
+
+/* Inspiration (F32): tabs, then the examples; a YouTube poster plays on a click. */
+.ob-insp { margin-top: 14px; }
+.ob-insp__tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--ob-line); }
+.ob-insp__tab { font: inherit; font-size: 14.5px; color: var(--ob-muted); background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 16px; min-height: 44px; cursor: pointer; margin-bottom: -1px; }
+.ob-insp__tab[aria-selected="true"] { color: var(--ob-ink); border-bottom-color: var(--ob-ink); }
+.ob-insp .ob-media { margin-top: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.ob-media__yt { position: relative; display: block; width: 100%; padding: 0; border: 0; background: #000; cursor: pointer; }
+.ob-media__yt img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; opacity: .92; }
+.ob-media__play { position: absolute; inset: 0; margin: auto; width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,0,0,.65); color: #fff; font-size: 22px; }
+.ob-media__item iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; display: block; }
+.ob-insp__links { margin: 10px 0 0; font-size: 14px; color: var(--ob-muted); }
+.ob-insp__links a { color: var(--ob-ink); }
+.ob-sec[hidden], .ob-steps a[hidden], .ob-media[hidden] { display: none; }
+
+/* « Voir l'inspiration » and its pop-up (19 Oct). */
+.ob-insp__link { font: inherit; font-size: 14px; color: var(--ob-ink); background: none; border: 0; padding: 4px 2px; min-height: 36px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.ob-pop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 24px; background: rgba(0, 0, 0, .72); }
+.ob-pop__box { position: relative; width: min(960px, 100%); background: #000; }
+.ob-pop__box iframe, .ob-pop__box video { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; background: #000; }
+.ob-pop__x { position: absolute; top: -48px; right: 0; width: 44px; height: 44px; font: inherit; font-size: 20px; color: #fff; background: none; border: 0; cursor: pointer; }
+.ob-pop__title { margin: 0; padding: 10px 14px; color: #e5e7eb; background: #000; font-size: 14px; }
+@media (max-width: 760px) {
+  .ob-pop { padding: 0; }
+  .ob-pop__box { width: 100%; height: 100%; display: grid; align-content: center; }
+  .ob-pop__x { top: 8px; right: 8px; z-index: 1; }
+}
+.ob-optional { color: var(--ob-muted); font-size: 14px; }
+.ob-approve { margin: 0 0 12px; padding: 14px 16px; border-left: 3px solid var(--ob-ink); background: var(--ob-band); white-space: pre-wrap; font-size: 16px; line-height: 1.55; }

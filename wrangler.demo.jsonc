@@ -1,0 +1,34 @@
+{
+  // A throwaway HQ for portfolio screenshots: the same Worker, a purely local
+  // database and KV under .wrangler/demo, seeded by scripts/seed-demo.mjs.
+  // Never deployed. `wrangler dev --local --config wrangler.demo.jsonc
+  // --persist-to .wrangler/demo --port 8790`.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hq-demo",
+  "main": "src/worker/index.js",
+  "compatibility_date": "2025-07-18",
+  "workers_dev": false,
+  "assets": { "directory": "./src/public", "binding": "ASSETS", "run_worker_first": true, "html_handling": "none" },
+  // Ids that exist nowhere (audit, 13 Nov): with production's ids, one command
+  // run without --local would have seeded (DELETE FROM leads …) the live database.
+  "kv_namespaces": [
+    { "binding": "STATUS", "id": "00000000000000000000000000000001" },
+    { "binding": "OPENS", "id": "00000000000000000000000000000002" }
+  ],
+  "d1_databases": [
+    { "binding": "DB", "database_name": "hq-demo", "database_id": "00000000-0000-0000-0000-000000000000" }
+  ],
+  "vars": {
+    "ACCESS_TEAM": "", "ACCESS_AUD": "", "CF_ACCOUNT_ID": "", "LEADS_SUMMARY_URL": "",
+    // A fictional studio, so no real name, domain, brand or project is ever
+    // in a public screenshot.
+    "DEMO": "on",
+    // The same « today » as live (Lima): an invoice issued on a Lima evening
+    // was dated tomorrow in the demo, which fell back to Brussels (audit C14).
+    "HQ_TIME_ZONE": "America/Lima",
+    "HQ_DOMAIN": "hq.kestrelstudio.com",
+    "HQ_OWNER": "Sam",
+    "HQ_BRAND_WEB": "Kestrel Studio",
+    "HQ_BRAND_UGC": "Fieldnote"
+  }
+}

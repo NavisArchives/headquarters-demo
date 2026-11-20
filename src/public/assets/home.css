@@ -1,0 +1,249 @@
+/* Home — one screen, no page scroll on a desktop, in the family of the
+   Marc Aubin editor's dashboard:
+
+     Welcome back, Andy                       13        540     €1,700     2
+     date · status                       MISSIONS    LEADS    PAID    ATTENTION
+
+     [ site card: tabs, screenshot,      ] [ missions ring ] [ needs attention ]
+     [ name, open, facts, clients        ] [ leads & money · weeks · activity  ]
+
+   A box with more than fits scrolls inside itself, never the page. Below
+   1100px it becomes the ordinary stacked page. */
+.home { display: grid; gap: var(--gap); }
+
+/* ---- hero with the big figures ---- */
+.home-hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; flex-wrap: wrap; padding-block: 18px 4px; }
+.home-hero .hero { padding: 0; flex: 1 1 320px; }
+.home-hero .hero h1 { font-size: clamp(32px, 3.6vw, 46px); }
+.counts { display: flex; gap: 28px; align-items: flex-end; flex-wrap: wrap; }
+.count { display: flex; flex-direction: column; align-items: flex-end; font: inherit; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; }
+.count b { font-size: clamp(30px, 3.6vw, 42px); font-weight: 400; letter-spacing: -.035em; line-height: 1; font-variant-numeric: tabular-nums; }
+.count i { font-style: normal; font-family: var(--mono); font-size: var(--micro); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 6px; white-space: nowrap; }
+.count:hover b { color: var(--green); }
+.count.is-warn b { color: var(--amber); }
+
+/* ---- the two columns ---- */
+.home-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--gap); min-height: 0; }
+.home-main > * { min-width: 0; min-height: 0; }
+.home-right { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); gap: var(--gap); min-height: 0; }
+.home-right > * { min-width: 0; min-height: 0; }
+
+.card.tight { padding: 18px 20px; }
+.card .eyebrow { margin-bottom: 12px; }
+.card .eyebrow .n, .card .eyebrow a { font-family: var(--sans); font-size: 12.5px; letter-spacing: 0; text-transform: none; }
+.card .eyebrow a { color: var(--green); text-decoration: none; }
+.card .eyebrow a:hover { text-decoration: underline; }
+.box { display: flex; flex-direction: column; min-height: 0; }
+.box .scroll { min-height: 0; overflow: auto; scrollbar-width: thin; margin-inline: -6px; padding-inline: 6px; }
+
+/* ---- the left column: the site card, then the clients ---- */
+.home-left { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: var(--gap); min-height: 0; }
+.home-left > * { min-height: 0; }
+.cl-list { display: grid; gap: 6px; }
+.cl-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 10px; border-radius: 12px; background: var(--soft-2); }
+.cl-open { display: flex; align-items: center; gap: 10px; min-width: 0; font: inherit; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+.cl-open:hover b { color: var(--green); }
+.cl-text { display: grid; min-width: 0; }
+.cl-text b { font-size: 14.5px; font-weight: 600; letter-spacing: -.01em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cl-text small { font-size: var(--micro); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cl-row .rx-pills { justify-content: flex-end; flex-wrap: wrap; }
+.cl-row .rx-pill { min-height: 28px; padding: 0 9px; }
+
+/* ---- the site card ---- */
+.sitecard { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+.frame { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--soft-2); display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto; }
+.sitecard { min-height: 0; }
+.frame__bar { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--soft); border-bottom: 1px solid var(--line-soft); }
+.frame__dots { display: flex; gap: 5px; }
+.frame__dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.frame__url { font-family: var(--mono); font-size: var(--micro); color: var(--muted); letter-spacing: .04em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.frame__tabs { margin-left: auto; display: flex; gap: 2px; padding: 2px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; }
+.frame__tabs button { white-space: nowrap; font: inherit; font-size: 12.5px; color: var(--ink-2); background: transparent; border: 0; border-radius: 999px; padding: 4px 10px; cursor: pointer; min-height: 26px; }
+.frame__tabs button[aria-selected="true"] { background: var(--green); color: var(--on-green); }
+.frame__shot { aspect-ratio: 16 / 10; flex: none; overflow: hidden; background: var(--ground); position: relative; }
+.frame__shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.frame__shot.none { display: grid; place-items: center; color: var(--muted); font-size: 13px; }
+.site-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.site-row h2 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
+.site-row p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+.site-row .btn.primary { flex: none; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.fact { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; align-items: center; padding: 10px 12px; background: var(--soft); border-radius: 10px; min-width: 0; font: inherit; color: var(--ink); border: 0; text-align: left; cursor: default; }
+.fact i { width: 7px; height: 7px; border-radius: 50%; grid-row: 1 / 3; background: var(--line); }
+.fact i.d-ok { background: var(--green); } .fact i.d-bad { background: var(--red); } .fact i.d-warn { background: var(--amber); }
+.fact b { font-size: 14px; font-weight: 600; letter-spacing: -.01em; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fact span { font-size: var(--micro); color: var(--muted); grid-column: 2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fact.is-link { cursor: pointer; } .fact.is-link:hover { outline: 1px solid var(--green); }
+.clients-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.clients-row .lbl { font-family: var(--mono); font-size: var(--micro); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+.client-chip { display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 12.5px; color: var(--ink-2); background: var(--soft); border: 1px solid transparent; border-radius: 999px; padding: 5px 11px; cursor: pointer; min-height: 30px; }
+.client-chip:hover { border-color: var(--green); color: var(--ink); }
+.client-chip i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); }
+.client-chip i.d-ok { background: var(--green); } .client-chip i.d-idle { background: var(--muted); }
+
+/* ---- the missions ring ---- */
+.ring { position: relative; width: 132px; margin: 2px auto 8px; }
+.ring svg { width: 100%; height: auto; transform: rotate(-90deg); display: block; }
+.ring circle { fill: none; stroke-width: 9; }
+.ring__track { stroke: var(--line); }
+.ring__fill { stroke: var(--green); stroke-linecap: round; transition: stroke-dashoffset .6s ease; }
+.ring__centre { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.ring__centre b { font-size: 28px; font-weight: 400; letter-spacing: -.03em; line-height: 1; }
+.ring__centre span { font-family: var(--mono); font-size: var(--micro); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+.ring__legend { display: grid; gap: 5px; margin-top: auto; }
+.ring__legend div { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--ink-2); }
+.ring__legend i { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--line); }
+.ring__legend i.l-in { background: var(--green); } .ring__legend i.l-blocked { background: var(--red); } .ring__legend i.l-ready { background: var(--muted); } .ring__legend i.l-proposed { background: var(--amber); }
+.ring__legend b { font-family: var(--mono); font-weight: 500; min-width: 2ch; color: var(--ink); }
+
+/* ---- attention: rows with a count badge, and the one button ---- */
+.att-list { display: grid; gap: 6px; }
+.att-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--soft-2); border: 1px solid transparent; font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
+.att-row:hover { border-color: var(--line); }
+.att-row .t { min-width: 0; display: grid; gap: 2px; }
+.att-row .t b { font-weight: 400; font-size: 13.5px; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.att-row .t small { font-size: var(--micro); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.att-row .badge { font-family: var(--mono); font-size: var(--micro); min-width: 26px; height: 26px; padding: 0 8px; border-radius: 999px; display: grid; place-items: center; background: var(--amber-soft); color: var(--amber); }
+.att-row .badge.b-bad { background: var(--red-soft); color: var(--red); }
+.att-row .badge.b-idle { background: var(--soft); color: var(--muted); }
+.box .cta { margin-top: auto; padding-top: 12px; display: flex; justify-content: flex-end; }
+
+/* ---- money and leads: figures, then a small chart or the latest activity ---- */
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.stat { display: grid; gap: 2px; min-width: 0; padding: 10px 12px; border-radius: 10px; background: var(--soft); font: inherit; color: var(--ink); border: 0; text-align: left; cursor: pointer; }
+.stat:hover { outline: 1px solid var(--green); }
+.stat b { font-size: 20px; font-weight: 400; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stat span { font-size: var(--micro); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stat.s-live b { color: var(--green); } .stat.s-warn b { color: var(--amber); }
+.stat.wide { grid-column: 1 / -1; }
+.bars__wrap { margin-top: auto; padding-top: 10px; }
+.bars { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); align-items: end; gap: 4px; height: 44px; }
+.bars i { display: block; border-radius: 4px 4px 2px 2px; background: color-mix(in srgb, var(--green) 45%, var(--soft)); min-height: 3px; }
+.bars i.is-now { background: var(--green); }
+.bars__labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: var(--micro); color: var(--muted); margin-top: 6px; }
+.box .rows { margin-top: 10px; }
+.box .rows .row { padding: 6px 8px; grid-template-columns: auto minmax(0, 1fr) auto; }
+.box .rows .row .who { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.box .rows .row .who small { display: none; }
+.box .rows .row .when { font-size: var(--micro); }
+
+/* the no-scroll contract, only where the screen is wide and tall enough */
+@media (min-width: 1100px) and (min-height: 700px) {
+  .home { height: calc(100vh - var(--home-top, 88px) - var(--home-below, 60px)); grid-template-rows: auto minmax(0, 1fr); }
+  .home + footer.nb { margin-top: 10px; padding-top: 8px; padding-bottom: 12px; }
+}
+@media (max-width: 1100px) {
+  .frame__shot { aspect-ratio: 16 / 10; flex: none; }
+  .home-main, .home-right { grid-template-columns: minmax(0, 1fr); }
+  .home-right, .home-left { grid-template-rows: none; }
+  .counts { gap: 18px; }
+  .count { align-items: flex-start; }
+}
+@media (max-width: 620px) {
+  .facts { grid-template-columns: minmax(0, 1fr); }
+  .frame__tabs { margin-left: 0; }
+  .frame__bar { flex-wrap: wrap; }
+}
+
+/* ---- the to-do card (todos.css styles its insides) ---- */
+/* Home: the to-do card gets the taller top row. */
+@media (min-width: 1100px) and (min-height: 700px) {
+  .home-right { grid-template-rows: minmax(0, 1.35fr) minmax(0, 1fr); }
+}
+/* Stacked (tablet and phone): the to-do list comes first, the rest after it
+   in the order it always had. */
+@media (max-width: 1100px) {
+  .home-main, .home-left, .home-right { display: contents; }
+  .home-main > *, .home-left > *, .home-right > * { min-width: 0; }
+  .home-main { display: grid; }
+  .td-card { order: -1; }
+}
+
+/* ---- the site card (Andy, 16 Oct): a window with the three Mac dots, the
+   screenshot as wide as the card, the sites as floating circles on its left ---- */
+.sitecard { position: relative; overflow: visible; }
+.sitecard .frame { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--soft-2); }
+.sitecard .frame__bar { padding: 9px 12px; background: var(--soft); border: 0; border-bottom: 1px solid var(--line-soft); gap: 0; }
+.sitecard .frame__url { display: none; }
+.sitecard .frame__dots i { width: 11px; height: 11px; }
+.sitecard .frame__dots i:nth-child(1) { background: #ff5f57; }
+.sitecard .frame__dots i:nth-child(2) { background: #febc2e; }
+.sitecard .frame__dots i:nth-child(3) { background: #28c840; }
+.sitecard .frame__shot { flex: 1 1 auto; min-height: 0; }
+.sitecard .frame__shot img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.sitecard .frame__tabs {
+  position: absolute; left: -60px; top: 18px; z-index: 2; margin: 0; padding: 0;
+  display: grid; gap: 10px; background: none; border: 0;
+}
+.sitecard .frame__tabs button {
+  width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 50%;
+  display: grid; place-items: center; font-weight: 600; font-size: 13px; letter-spacing: .02em;
+  background: var(--card); color: var(--ink-2); border: 1px solid var(--line); box-shadow: var(--shadow);
+}
+.sitecard .frame__tabs button:hover { border-color: var(--green); color: var(--ink); }
+.sitecard .frame__tabs button[aria-selected="true"] { background: var(--green); border-color: var(--green); color: var(--on-green); }
+@media (max-width: 1100px) {
+  .sitecard .frame__shot { aspect-ratio: 16 / 10; flex: none; }
+  .sitecard .frame__tabs { position: static; display: flex; padding: 0 0 10px; order: -1; }
+}
+/* Where the page has no room beside the card, the circles sit inside its left edge. */
+@media (min-width: 1101px) and (max-width: 1379px) {
+  .sitecard { padding-left: 76px; }
+  .sitecard .frame__tabs { left: 18px; }
+}
+/* The missions ring sits in the middle of its card, the legend under it. */
+.ring { margin: auto; }
+.ring__legend { margin-top: 0; }
+
+/* The morning briefing, on demand (briefing.js). */
+/* A 44 px target that keeps the date line's own height (the negative margins). */
+.home-briefing { font: inherit; color: var(--green); background: none; border: 0; padding: 0 4px; min-height: 44px; margin-block: -10px; display: inline-flex; align-items: center; vertical-align: middle; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---- the phone (P6 block 2, 14 Nov) ----
+   phone.css draws the frame. Here: one line of greeting with the briefing,
+   the big figures become segments (To do · Missions · Leads · Money) whose
+   counts are their panes', one pane at a time, and one region that scrolls:
+   the to-do list itself (its quick-add stays on top), or the pane area. */
+.home-seg, .home-briefing--phone { display: none; }
+@media (max-width: 760px) {
+  .home-hero { flex-wrap: nowrap; align-items: center; gap: 10px; padding-block: 6px 0; }
+  .home-hero .hero { flex: 1 1 auto; min-width: 0; }
+  /* line-height holds the italic name inside the clipped box (the ellipsis needs overflow: hidden) */
+  .home-hero .hero h1 { font-size: 26px; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .home-hero .hero .sub, .home-hero .counts { display: none; }
+  .home-briefing--phone {
+    display: inline-flex; flex: 0 0 auto; margin: 0; padding: 0 14px;
+    border: 1px solid var(--line); border-radius: 999px;
+  }
+
+  .home-seg { display: flex; flex-wrap: nowrap; gap: 2px; margin: 0; }
+  .home-seg .tab { flex: 1 1 auto; justify-content: center; min-width: 0; gap: 5px; padding-inline: 6px; font-size: 13px; white-space: nowrap; }
+  .home-seg .tab .n { font-family: var(--mono); font-size: 12px; opacity: .75; }
+
+  .home-main { display: flex; flex-direction: column; gap: 10px; flex: 1 1 auto; min-height: 0; }
+  .home [data-pane] { display: none; }
+  .home[data-seg="todo"] [data-pane="todo"],
+  .home[data-seg="missions"] [data-pane="missions"],
+  .home[data-seg="leads"] [data-pane="leads"],
+  .home[data-seg="money"] [data-pane="money"] { display: flex; }
+  /* the to-do pane fills the screen: quick-add on top, the list scrolls, the two buttons at the foot */
+  .home[data-seg="todo"] .home-main { overflow: hidden; }
+  .home[data-seg="todo"] .td-card { flex: 1 1 auto; min-height: 0; }
+  .home[data-seg="todo"] .td-card .scroll { flex: 1 1 auto; }
+  /* the card's own foot (Calendar, Open missions) stays clear of the floating tab bar */
+  .home[data-seg="todo"] .td-card { margin-bottom: var(--region-end); }
+  .home[data-seg="todo"] .td-card .scroll-region { padding-bottom: 0; }
+  .home .box .scroll { margin-inline: 0; padding-inline: 0; }
+  /* the segment already names the list and counts it */
+  .home .td-card > .eyebrow { display: none; }
+  .home-briefing--phone { text-decoration: none; }
+  /* Money: the figures first, then the clients, then the site */
+  .home [data-pane-order="1"] { order: 1; }
+  .home [data-pane-order="2"] { order: 2; }
+  .home [data-pane-order="3"] { order: 3; }
+  /* the other panes: cards at their own height, inside one scrolling pane area */
+  .home:not([data-seg="todo"]) [data-pane] { flex: none; }
+  .home:not([data-seg="todo"]) .box .scroll { overflow: visible; }
+}
+/* The narrowest phones (320): the greeting a size smaller, so it never runs into Briefing. */
+@media (max-width: 360px) { .home-hero .hero h1 { font-size: 22px; } .home-briefing--phone { padding: 0 12px; } }

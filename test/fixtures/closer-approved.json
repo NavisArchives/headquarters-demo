@@ -1,0 +1,32 @@
+[
+  {
+    "kind": "B1",
+    "lang": "FR",
+    "body": "Bonjour,\n\nC’est mon dernier message : je vous ai écrit deux fois au sujet de votre site internet et je ne voudrais pas insister. Je vous retire donc de notre liste de prospects.\n\nSi le sujet revient un jour, il vous suffit de répondre à ce message.\n\nBien à vous,\n\nAndy\nRealis Studio, Bruxelles\nrealisstudio.com"
+  },
+  {
+    "kind": "B1",
+    "lang": "NL",
+    "body": "Goedendag,\n\nDit is mijn laatste bericht: ik schreef u twee keer over uw website en ik wil niet aandringen. Ik haal u dus van onze prospectlijst.\n\nWordt het ooit een onderwerp, dan volstaat een antwoord op dit bericht.\n\nMet vriendelijke groeten,\n\nAndy\nRealis Studio, Brussel\nrealisstudio.com"
+  },
+  {
+    "kind": "B1",
+    "lang": "EN",
+    "body": "Hello,\n\nThis is my last message: I’ve written to you twice about your website and I don’t want to insist. I’ll remove you from our prospect list.\n\nIf it ever becomes a topic, simply reply to this message.\n\nBest regards,\n\nAndy\nRealis Studio, Brussels\nrealisstudio.com"
+  },
+  {
+    "kind": "B2",
+    "lang": "FR",
+    "body": "Bonjour Docteur Example,\n\nC’est mon dernier message : je vous ai écrit deux fois au sujet d’un site internet pour votre cabinet et je ne voudrais pas insister. Je vous retire donc de notre liste de prospects.\n\nSi le sujet revient un jour, il vous suffit de répondre à ce message.\n\nBien cordialement,\n\nAndy\nRealis Studio, Bruxelles\nrealisstudio.com"
+  },
+  {
+    "kind": "B2",
+    "lang": "NL",
+    "body": "Beste dokter Example,\n\nDit is mijn laatste bericht: ik schreef u twee keer over een website voor uw praktijk en ik wil niet aandringen. Ik haal u dus van onze prospectlijst.\n\nWordt het ooit een onderwerp, dan volstaat een antwoord op dit bericht.\n\nMet vriendelijke groeten,\n\nAndy\nRealis Studio, Brussel\nrealisstudio.com"
+  },
+  {
+    "kind": "B2",
+    "lang": "EN",
+    "body": "Dear Dr Example,\n\nThis is my last message: I’ve written to you twice about a website for your practice and I don’t want to insist. I’ll remove you from our prospect list.\n\nIf it ever becomes a topic, simply reply to this message.\n\nKind regards,\n\nAndy\nRealis Studio, Brussels\nrealisstudio.com"
+  }
+]

@@ -1,0 +1,183 @@
+/* Quick personalization: the culling view (screens/leads-cull.js).
+   A full-screen layer over Leads. The page never scrolls: the header and the
+   filters stay put, only the list scrolls. Rows share one height. */
+
+.cull {
+  position: fixed; inset: 0; z-index: 70; overscroll-behavior: contain;
+  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 14px;
+  padding: 22px max(16px, calc((100vw - 1100px) / 2)) 16px;
+  background: var(--ground); color: var(--ink);
+}
+.cull-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 10px 18px; }
+.cull-title h2 { margin: 0; font-size: 26px; font-weight: 500; letter-spacing: -.03em; }
+.cull-sub { margin: 4px 0 0; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+.cull-head-end { display: flex; align-items: center; gap: 12px; }
+.cull-counter { margin: 0; font-family: var(--mono); font-size: var(--micro); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+.cull-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+/* Calmer header (13 Nov): the list and the field are two compact menus on every
+   screen; the status is one small segmented control. */
+.cull-markets, .cull-fields { display: none !important; }
+.cull-market-select, .cull-field-select { display: block; min-height: 36px; max-width: 260px; }
+.cull-marks-filter { flex-wrap: nowrap; gap: 0; border: 1px solid var(--line); border-radius: 999px; padding: 2px; }
+.cull-marks-filter .cull-chip { border: 0; min-height: 30px; padding: 0 12px; }
+.cull-progress { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.cull-progress-bar { display: block; width: 120px; height: 4px; border-radius: 999px; background: var(--line); overflow: hidden; flex: none; }
+.cull-progress-bar > i { display: block; height: 100%; width: 0; background: var(--green); transition: width .3s ease; }
+.cull-progress .cull-counter { margin: 0; font-size: 13px; color: var(--muted); letter-spacing: 0; text-transform: none; font-family: inherit; }
+.cull-say { font: inherit; font-size: 15px; width: 34px; height: 34px; border-radius: 999px; border: 1px solid var(--line); background: transparent; cursor: pointer; }
+.cull-say.is-on { border-color: var(--green); }
+.cull-seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.cull-chip {
+  font: inherit; font-size: 13px; min-height: 34px; padding: 0 13px; border-radius: 999px; cursor: pointer;
+  color: var(--ink-2); background: transparent; border: 1px solid var(--line);
+}
+.cull-chip:hover { color: var(--ink); }
+.cull-chip.is-on { color: var(--on-green); background: var(--green); border-color: var(--green); }
+
+.cull-list { overflow-y: auto; overscroll-behavior: contain; min-height: 0; display: flex; flex-direction: column; gap: 6px; scrollbar-width: thin; padding: 2px; margin: -2px; }
+.cull-row {
+  flex: none;
+  display: grid; grid-template-columns: 76px minmax(0, 1fr) auto auto; align-items: center; gap: 14px;
+  height: 64px; padding: 0 14px; border-radius: var(--r-sm, 12px);
+  background: var(--card); border: 1px solid transparent; cursor: default;
+}
+.cull-row.is-at { border-color: var(--green); }
+.cull-row.is-skip { opacity: .55; }
+.cull-code { font-family: var(--mono); font-size: 22px; font-weight: 500; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+.cull-who { min-width: 0; display: grid; gap: 2px; }
+.cull-who b { font-weight: 500; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cull-who small { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cull-open { min-height: 40px; padding: 0 18px; }
+.cull-marks { display: flex; gap: 6px; }
+.cull-mark {
+  width: 40px; height: 40px; border-radius: 50%; font-size: 16px; cursor: pointer;
+  color: var(--ink-2); background: transparent; border: 1px solid var(--line);
+}
+.cull-mark:hover:not(:disabled) { color: var(--ink); border-color: var(--green); }
+.cull-mark.is-on { color: var(--on-green); background: var(--green); border-color: var(--green); }
+.cull-mark:disabled { opacity: .35; cursor: not-allowed; }
+.cull-empty { margin: 12px 2px; font-size: 13.5px; color: var(--muted); }
+.cull-keys { margin: 0; font-size: 12px; color: var(--muted); }
+
+/* The list dropdown is the phone's; desktops keep the chips. Short chip labels likewise. */
+/* (The two menus show on every screen since 13 Nov; see .cull-filters above.) */
+.cull-fields[hidden], .cull-field-select[hidden], .cull-market-select[hidden] { display: none !important; }
+.cull-chip .s { display: none; }
+
+/* G/I/N/D and the rest: LEADS's « seen: … » hint, and whether a row may be emailed. */
+.cull-list.has-hints .cull-row:not(.is-travel) { height: 84px; }
+.cull-name { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.cull-name b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cull-badge {
+  flex: none; font-family: var(--mono); font-size: var(--micro); letter-spacing: .06em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px; white-space: nowrap; cursor: help;
+}
+.cull-badge.is-pending { color: var(--amber); background: var(--amber-soft); }
+.cull-badge.is-research { color: var(--muted); background: var(--soft-2); }
+.cull-badge.is-tier { cursor: default; color: var(--muted); background: var(--soft-2); }
+.cull-badge.is-t1 { color: var(--green-deep, var(--ink)); background: var(--soft-2); border: 1px solid currentColor; }
+.cull-seen { color: var(--ink) !important; font-style: italic; font-size: 14px !important; line-height: 1.35; }
+
+/* P · Travel stays: three lines per place (name; town + how to apply; what they offer). */
+.cull-row.is-travel { height: 84px; }
+.cull-offer { color: var(--ink-2) !important; }
+
+/* The message sheet: over the culling layer, never a send button. */
+.cull-sheet {
+  position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; padding: 20px;
+  background: rgba(16, 22, 19, .55);
+}
+.cull-sheet__panel {
+  width: min(720px, 100%); max-height: 100%; overflow: auto; overscroll-behavior: contain;
+  display: grid; gap: 14px; padding: 20px; border-radius: var(--r, 16px);
+  background: var(--card); border: 1px solid var(--line);
+}
+.cull-sheet__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.cull-sheet__top h3 { margin: 0; font-size: 18px; font-weight: 500; letter-spacing: -.02em; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cull-sheet__how { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; }
+.cull-sheet__how p { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); flex: 1 1 260px; }
+.cull-sheet__cond { margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+.cull-sheet__cond b { color: var(--ink); font-weight: 600; }
+.cull-sheet__acts, .cull-sheet__msghead { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cull-sheet__msghead { justify-content: space-between; }
+.cull-sheet__text { width: 100%; min-height: 220px; font: inherit; font-size: 14px; line-height: 1.55; resize: vertical; }
+.cull-kit { display: grid; gap: 8px; padding-top: 4px; border-top: 1px solid var(--line); }
+.cull-kit__title { margin: 8px 0 0; font-family: var(--mono); font-size: var(--micro); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.cull-kit__files { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px; }
+.cull-kit__file {
+  display: flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 10px;
+  font-size: 13.5px; color: var(--ink); text-decoration: none; background: var(--soft-2); border: 1px solid transparent;
+}
+.cull-kit__file:hover { border-color: var(--green); }
+.cull-kit__file.is-folder { color: var(--green); }
+
+@media (max-width: 620px) {
+  .cull { padding-top: 16px; gap: 10px; }
+  .cull-sub, .cull-keys { display: none; }
+  .cull-title h2 { font-size: 22px; }
+  /* Header (NIRMATA M3, 28 Oct): the title, then the counter on its own full line,
+     then Documents and Close. */
+  .cull-head { display: grid; gap: 8px; }
+  .cull-head-end { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cull-counter { flex: 1 0 100%; line-height: 1.5; }
+  .cull-head-end .chip-btn { min-height: 44px; }
+  /* Filters (M1, M2): every chip visible, wrapping onto as many lines as it needs,
+     never a row scrolled sideways with chips cut at either edge. */
+  .cull-filters { display: grid; gap: 8px; }
+  /* I2: the lists are one dropdown; the mark filters one row of short chips. */
+  .cull-market-select { display: block; width: 100%; min-height: 44px; }
+  .cull-field-select { display: block; width: 100%; min-height: 44px; }
+  .cull-markets, .cull-fields { display: none; }
+  .cull-marks-filter { flex-wrap: nowrap; }
+  .cull-marks-filter .cull-chip { flex: 1 1 0; min-width: 0; padding: 0 6px; justify-content: center; }
+  .cull-chip .l { display: none; }
+  .cull-chip .s { display: inline; }
+  .cull-seg { flex-wrap: wrap; overflow: visible; margin: 0; padding: 0; }
+  .cull-chip { flex: none; white-space: nowrap; min-height: 40px; }
+  /* Two lines per lead: code + name, then Open site + the three marks. */
+  .cull-row {
+    grid-template-columns: 52px minmax(0, 1fr) auto;
+    grid-template-areas: "code who who" "open open marks";
+    height: auto; min-height: 0; padding: 10px 12px; gap: 8px 12px;
+  }
+  .cull-code { grid-area: code; font-size: 18px; }
+  .cull-who { grid-area: who; }
+  .cull-open { grid-area: open; justify-self: stretch; }
+  .cull-marks { grid-area: marks; }
+  .cull-row.is-travel, .cull-list.has-hints .cull-row:not(.is-travel) { height: auto; }
+  .cull-seen { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+  /* Rows of one view keep one height on a phone too: the hinted rows set it. */
+  .cull-list.has-hints .cull-row:not(.is-travel) { min-height: 134px; }
+  /* What the place offers wraps to two lines on a phone instead of being cut mid-word. */
+  .cull-row.is-travel .cull-offer { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+  .cull-sheet { padding: 0; place-items: end stretch; }
+  .cull-sheet__panel { border-radius: 18px 18px 0 0; max-height: 92%; padding: 16px; gap: 12px; }
+  /* M4: no cut text, every button at least 44px, a textarea you can work in. */
+  .cull-sheet__top { align-items: flex-start; }
+  .cull-sheet__top h3 { white-space: normal; overflow: visible; font-size: 17px; line-height: 1.35; }
+  .cull-sheet button, .cull-sheet .chip-btn, .cull-sheet .btn.small, .cull-sheet .cull-chip { min-height: 44px; }
+  .cull-sheet__acts { width: 100%; }
+  .cull-sheet__acts .btn { flex: 1 1 140px; }
+  .cull-sheet__text { min-height: 200px; font-size: 16px; }
+  .cull-kit__files { grid-template-columns: 1fr; }
+  .cull-kit__file { min-height: 44px; }
+}
+
+/* While the message sheet is open, the toast moves to the top so it never covers
+   the documents at the sheet's bottom edge (NIRMATA M5, 28 Oct). */
+body:has(.cull-sheet) .toast { bottom: auto; top: calc(14px + env(safe-area-inset-top, 0px)); }
+
+/* « Documents » is for the Travel tab only. HQ's phone rules give .chip-btn a display,
+   which would beat the hidden attribute, so hidden is made explicit here. */
+.cull-head-end .chip-btn[hidden] { display: none !important; }
+
+/* The record control, beside Close (13 Nov). */
+.cull-session { display: flex; align-items: center; gap: 10px; }
+.cull-rec.is-recording { color: var(--red, #E08A84); border-color: currentColor; }
+.cull-clock { font-family: var(--mono); font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums; min-width: 5ch; }
+.cull-done { font-family: var(--mono); font-size: var(--micro); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+/* A card whose site was opened stays marked. */
+.cull-row.is-opened { background: var(--soft-2); }
+.cull-row.is-opened .cull-code { color: var(--green); }
+.cull-open.is-opened { color: var(--green); border-color: var(--green); }

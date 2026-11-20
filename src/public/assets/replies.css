@@ -1,0 +1,116 @@
+/* The reply funnel: the proposal tray on Missions, and the "What they said"
+   block inside a lead's popup. Injected by replies-ui.js so index.html stays
+   the layout agents' file. Everything here is namespaced under .rp-. */
+
+.rp-review {
+  border: 1px solid var(--line, #27332B);
+  border-radius: 12px;
+  padding: 12px 13px;
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.rp-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rp-who {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+
+.rp-when {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: var(--muted, #8A9C90);
+  white-space: nowrap;
+}
+
+.rp-pill {
+  font-size: 10.5px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  opacity: .85;
+}
+
+.rp-pill.rp-warm { color: var(--green, #6FBF8F); }
+.rp-pill.rp-cold { color: var(--amber, #D9A741); }
+.rp-pill.rp-flat { color: var(--muted, #8A9C90); }
+
+.rp-summary {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.rp-asks {
+  margin: 0;
+  padding-left: 17px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--muted, #8A9C90);
+}
+
+.rp-asks a { word-break: break-all; }
+
+.rp-excerpt {
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.rp-excerpt > summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--muted, #8A9C90);
+}
+
+.rp-excerpt > p {
+  margin: 7px 0 0;
+  padding: 9px 11px;
+  border-radius: 9px;
+  background: var(--soft-2, #18211C);
+  white-space: pre-wrap;
+}
+
+.rp-proposal {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 8px 0 0;
+  border-top: 1px dashed var(--line, #27332B);
+}
+
+.rp-proposal .rp-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.rp-proposal .rp-title small {
+  display: block;
+  color: var(--muted, #8A9C90);
+  font-size: 11.5px;
+  white-space: pre-wrap;
+}
+
+.rp-acts {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.rp-note {
+  font-size: 12px;
+  color: var(--muted, #8A9C90);
+  margin: 0;
+}
+
+.rp-note.rp-err { color: var(--red, #E08A84); }

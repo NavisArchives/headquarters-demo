@@ -1,0 +1,83 @@
+{
+  "source": "compose() of src/shared/outreach.js at 4469d23 (before audit part A)",
+  "rows": {
+    "withSite": {
+      "business": "Plastic surgeons",
+      "dataset": "plastic-surgeons-belgium",
+      "name": "Dr Jan Peeters",
+      "website": "https://peeters.example",
+      "category": "Own practice site",
+      "country": "Belgium",
+      "languages": [
+        "FR",
+        "NL",
+        "EN"
+      ],
+      "extra": {}
+    },
+    "noSite": {
+      "business": "Plastic surgeons",
+      "dataset": "plastic-surgeons-belgium",
+      "name": "Dr Anne Lambert",
+      "website": "",
+      "category": "No site",
+      "country": "Belgium",
+      "languages": [
+        "FR",
+        "NL",
+        "EN"
+      ],
+      "extra": {}
+    }
+  },
+  "drafts": {
+    "withSite|FR|email": {
+      "subject": "À l’attention du Dr Peeters",
+      "body": "Bonjour Docteur Peeters,\n\nJ’espère que vous allez bien.\n\nJe me permets de vous contacter au nom de Realis Studio, un studio bruxellois spécialisé dans la conception et le développement de sites internet et de solutions digitales pour les chirurgiens plasticiens et les professionnels de la médecine esthétique.\n\nNous avons récemment réalisé le site du Dr Marc Aubin, en accordant une attention particulière à la présentation de son expertise et à l’expérience des patients.\n\nVous pouvez découvrir notre travail ici :\nhttps://www.docteuraubin.example\n\nNous développons également des outils sur mesure : chaque praticien dispose notamment d’un espace de gestion pour modifier lui-même ses interventions et les contenus de son site, à tout moment.\n\nJe souhaitais savoir si vous envisagiez actuellement de créer ou de faire évoluer le site internet de votre cabinet.\n\nSi tel est le cas, je serais ravi d’échanger avec vous afin de mieux comprendre vos besoins et de vous soumettre une proposition adaptée.\n\nJe vous remercie pour votre attention.\n\nBien cordialement,\n\nAndy\nRealis Studio, Bruxelles\nhttps://realisstudio.com"
+    },
+    "withSite|FR|followup": {
+      "subject": "À l’attention du Dr Peeters",
+      "body": "Bonjour Docteur Peeters,\n\nUn bref suivi de mon précédent message.\n\nCe qui distingue nos sites : vous modifiez vous-même vos interventions, vos textes et vos photos, quand vous le souhaitez, sans dépendre d’un prestataire. Un exemple : https://www.docteuraubin.example\n\nAuriez-vous dix minutes cette semaine pour en parler ? Un simple « non merci » me convient aussi.\n\nBien cordialement,\n\nAndy\nRealis Studio, Bruxelles\nhttps://realisstudio.com"
+    },
+    "withSite|NL|email": {
+      "subject": "Ter attentie van Dr Peeters",
+      "body": "Beste dokter Peeters,\n\nMijn naam is Andy en ik neem contact met u op namens Realis Studio, een Brusselse studio gespecialiseerd in het ontwerpen en ontwikkelen van websites en digitale oplossingen voor plastisch chirurgen en esthetische praktijken.\n\nOnlangs realiseerden we de website van Dr. Marc Aubin, met bijzondere aandacht voor de presentatie van zijn expertise en de gebruikservaring van patiënten.\n\nU kunt ons werk hier bekijken:\nhttps://www.docteuraubin.example\n\nWe ontwikkelen ook tools op maat: zo krijgt u een eigen beheeromgeving om zelf uw behandelingen en de inhoud van uw website aan te passen, wanneer u maar wilt.\n\nIk vroeg me af of u momenteel overweegt om een nieuwe website te laten ontwikkelen of uw bestaande website te vernieuwen.\n\nMocht u interesse hebben, dan bespreek ik graag kort uw wensen om u vervolgens een voorstel op maat te kunnen bezorgen.\n\nMet vriendelijke groeten,\n\nAndy\nRealis Studio, Brussel\nhttps://realisstudio.com"
+    },
+    "withSite|NL|followup": {
+      "subject": "Ter attentie van Dr Peeters",
+      "body": "Beste dokter Peeters,\n\nEen korte opvolging van mijn vorige bericht.\n\nWat onze websites anders maakt: u past zelf uw behandelingen, teksten en foto’s aan, wanneer u wilt, zonder afhankelijk te zijn van een externe partij. Een voorbeeld: https://www.docteuraubin.example\n\nHeeft u deze week tien minuten om het te bespreken? Een kort “nee, bedankt” is ook prima.\n\nMet vriendelijke groeten,\n\nAndy\nRealis Studio, Brussel\nhttps://realisstudio.com"
+    },
+    "withSite|EN|email": {
+      "subject": "For the attention of Dr Peeters",
+      "body": "Dear Dr Peeters,\n\nI hope you are well.\n\nI am writing on behalf of Realis Studio, a Brussels-based studio specialising in the design and development of websites and digital tools for plastic surgeons and aesthetic medicine professionals.\n\nWe recently created the website of Dr Marc Aubin, with particular attention to the presentation of his expertise and to the patient experience.\n\nYou can see our work here:\nhttps://www.docteuraubin.example\n\nWe also build tailor-made software: each practitioner gets their own management space to update their procedures and website content themselves, whenever they like.\n\nI wanted to ask whether you are currently considering creating a new website for your practice or updating your existing one.\n\nIf so, I would be glad to speak with you to better understand your needs and send you a tailored proposal.\n\nThank you for your attention.\n\nKind regards,\n\nAndy\nRealis Studio, Brussels\nhttps://realisstudio.com"
+    },
+    "withSite|EN|followup": {
+      "subject": "For the attention of Dr Peeters",
+      "body": "Dear Dr Peeters,\n\nA short follow-up to my previous message.\n\nWhat sets our websites apart: you update your procedures, texts and photos yourself, whenever you like, without depending on anyone. An example: https://www.docteuraubin.example\n\nDo you have ten minutes this week to talk about it? A simple “no thanks” is fine too.\n\nKind regards,\n\nAndy\nRealis Studio, Brussels\nhttps://realisstudio.com"
+    },
+    "noSite|FR|email": {
+      "subject": "À l’attention du Dr Lambert",
+      "body": "Bonjour Docteur Lambert,\n\nJ’espère que vous allez bien.\n\nJe me permets de vous contacter au nom de Realis Studio, un studio bruxellois spécialisé dans la conception et le développement de sites internet et de solutions digitales pour les chirurgiens plasticiens et les professionnels de la médecine esthétique.\n\nNous avons récemment réalisé le site du Dr Marc Aubin, en accordant une attention particulière à la présentation de son expertise et à l’expérience des patients.\n\nVous pouvez découvrir notre travail ici :\nhttps://www.docteuraubin.example\n\nNous développons également des outils sur mesure : chaque praticien dispose notamment d’un espace de gestion pour modifier lui-même ses interventions et les contenus de son site, à tout moment.\n\nJe souhaitais savoir si vous envisagiez actuellement de créer ou de faire évoluer le site internet de votre cabinet.\n\nSi tel est le cas, je serais ravi d’échanger avec vous afin de mieux comprendre vos besoins et de vous soumettre une proposition adaptée.\n\nJe vous remercie pour votre attention.\n\nBien cordialement,\n\nAndy\nRealis Studio, Bruxelles\nhttps://realisstudio.com"
+    },
+    "noSite|FR|followup": {
+      "subject": "À l’attention du Dr Lambert",
+      "body": "Bonjour Docteur Lambert,\n\nUn bref suivi de mon précédent message.\n\nCe qui distingue nos sites : vous modifiez vous-même vos interventions, vos textes et vos photos, quand vous le souhaitez, sans dépendre d’un prestataire. Un exemple : https://www.docteuraubin.example\n\nAuriez-vous dix minutes cette semaine pour en parler ? Un simple « non merci » me convient aussi.\n\nBien cordialement,\n\nAndy\nRealis Studio, Bruxelles\nhttps://realisstudio.com"
+    },
+    "noSite|NL|email": {
+      "subject": "Ter attentie van Dr Lambert",
+      "body": "Beste dokter Lambert,\n\nMijn naam is Andy en ik neem contact met u op namens Realis Studio, een Brusselse studio gespecialiseerd in het ontwerpen en ontwikkelen van websites en digitale oplossingen voor plastisch chirurgen en esthetische praktijken.\n\nOnlangs realiseerden we de website van Dr. Marc Aubin, met bijzondere aandacht voor de presentatie van zijn expertise en de gebruikservaring van patiënten.\n\nU kunt ons werk hier bekijken:\nhttps://www.docteuraubin.example\n\nWe ontwikkelen ook tools op maat: zo krijgt u een eigen beheeromgeving om zelf uw behandelingen en de inhoud van uw website aan te passen, wanneer u maar wilt.\n\nIk vroeg me af of u momenteel overweegt om een nieuwe website te laten ontwikkelen of uw bestaande website te vernieuwen.\n\nMocht u interesse hebben, dan bespreek ik graag kort uw wensen om u vervolgens een voorstel op maat te kunnen bezorgen.\n\nMet vriendelijke groeten,\n\nAndy\nRealis Studio, Brussel\nhttps://realisstudio.com"
+    },
+    "noSite|NL|followup": {
+      "subject": "Ter attentie van Dr Lambert",
+      "body": "Beste dokter Lambert,\n\nEen korte opvolging van mijn vorige bericht.\n\nWat onze websites anders maakt: u past zelf uw behandelingen, teksten en foto’s aan, wanneer u wilt, zonder afhankelijk te zijn van een externe partij. Een voorbeeld: https://www.docteuraubin.example\n\nHeeft u deze week tien minuten om het te bespreken? Een kort “nee, bedankt” is ook prima.\n\nMet vriendelijke groeten,\n\nAndy\nRealis Studio, Brussel\nhttps://realisstudio.com"
+    },
+    "noSite|EN|email": {
+      "subject": "For the attention of Dr Lambert",
+      "body": "Dear Dr Lambert,\n\nI hope you are well.\n\nI am writing on behalf of Realis Studio, a Brussels-based studio specialising in the design and development of websites and digital tools for plastic surgeons and aesthetic medicine professionals.\n\nWe recently created the website of Dr Marc Aubin, with particular attention to the presentation of his expertise and to the patient experience.\n\nYou can see our work here:\nhttps://www.docteuraubin.example\n\nWe also build tailor-made software: each practitioner gets their own management space to update their procedures and website content themselves, whenever they like.\n\nI wanted to ask whether you are currently considering creating a new website for your practice or updating your existing one.\n\nIf so, I would be glad to speak with you to better understand your needs and send you a tailored proposal.\n\nThank you for your attention.\n\nKind regards,\n\nAndy\nRealis Studio, Brussels\nhttps://realisstudio.com"
+    },
+    "noSite|EN|followup": {
+      "subject": "For the attention of Dr Lambert",
+      "body": "Dear Dr Lambert,\n\nA short follow-up to my previous message.\n\nWhat sets our websites apart: you update your procedures, texts and photos yourself, whenever you like, without depending on anyone. An example: https://www.docteuraubin.example\n\nDo you have ten minutes this week to talk about it? A simple “no thanks” is fine too.\n\nKind regards,\n\nAndy\nRealis Studio, Brussels\nhttps://realisstudio.com"
+    }
+  }
+}

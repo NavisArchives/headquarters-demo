@@ -1,0 +1,196 @@
+/* Pipeline: the board and a prospect's page. HQ's own look. */
+
+.pl { display: grid; gap: var(--gap, 18px); }
+.pl-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; padding-top: 10px; }
+.pl-head h1 { margin: 0; font-size: clamp(34px, 4vw, 52px); font-weight: 400; letter-spacing: -.035em; line-height: 1.05; }
+.pl-sub { margin: 6px 0 0; color: var(--muted); font-size: 13.5px; }
+.pl-empty { color: var(--muted); }
+
+/* ---- the board: the seven stages side by side; a card drags between them ---- */
+.pl-board { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; align-items: stretch; min-height: 0; }
+.pl-col { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 8px; min-width: 0; min-height: 0; padding: 12px 10px; border-radius: 18px; background: var(--soft-2); border: 1px solid var(--line-soft); transition: border-color .12s, background .12s; }
+.pl-col__head { display: flex; justify-content: space-between; align-items: baseline; margin: 0; font-family: var(--mono); font-size: var(--micro); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.pl-col__head b { color: var(--ink); font-weight: 500; }
+/* One line in every column, so the first cards of a row start at the same height. */
+.pl-col__line { margin: -4px 0 2px; font-size: var(--micro); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pl-col__list { display: grid; gap: 8px; align-content: start; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 2px; margin: -2px; }
+/* While a card is dragged, every column says it takes it; the one under the pointer says so louder. */
+.pl-board.is-dragging .pl-col { border-style: dashed; border-color: var(--line); }
+.pl-board.is-dragging .pl-col.is-over { border-color: var(--green); background: var(--card); }
+.pl-card {
+  display: grid; gap: 6px; min-width: 0; padding: 0; border-radius: 14px; background: var(--card); border: 1px solid var(--line); cursor: grab;
+}
+.pl-card:hover { border-color: var(--green); }
+.pl-card.is-dragged { opacity: .45; }
+.pl-card__open { display: grid; gap: 4px; min-width: 0; padding: 12px 12px 0; text-align: left; font: inherit; color: var(--ink); background: none; border: 0; cursor: pointer; border-radius: 14px 14px 0 0; }
+/* The name gets the whole width; a brand tag sits under it, never beside it squeezing it. */
+.pl-card__head { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
+.pl-card__head b { font-weight: 600; font-size: 14px; letter-spacing: -.01em; line-height: 1.3; overflow-wrap: anywhere; }
+.pl-card__org { color: var(--muted); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl-card__next { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px 8px; margin-top: 4px; font-size: 12.5px; color: var(--ink-2); min-width: 0; }
+.pl-card__next > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.pl-card__facts { color: var(--muted); font-size: var(--micro); }
+.pl-card__move {
+  justify-self: start; margin: 0 8px 8px; font: inherit; font-size: var(--micro); color: var(--muted); background: transparent;
+  border: 1px solid var(--line-soft); border-radius: 999px; padding: 3px 8px; min-height: 26px; cursor: pointer; max-width: calc(100% - 16px);
+}
+.pl-card__move:hover, .pl-card__move:focus-visible { color: var(--ink); border-color: var(--line); }
+.pl-card.is-lost { opacity: .7; }
+.pl-tag { flex: none; font-family: var(--mono); font-size: var(--micro); color: var(--amber); background: var(--amber-soft); border-radius: 999px; padding: 1px 7px; }
+/* Narrower than a laptop: the columns scroll sideways, each wide enough to read. */
+@media (max-width: 1099px) {
+  .pl-board { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(230px, 78vw); overflow-x: auto; scroll-snap-type: x proximity; padding-bottom: 6px; }
+  .pl-col { scroll-snap-align: start; min-height: 220px; }
+  /* On a phone "Move to…" is how a card moves: a finger-sized target. */
+  .pl-card__move { min-height: 40px; padding: 0 14px; font-size: 13px; }
+}
+
+/* the date pill, as on Home's list (todos.css has the colours) */
+.pl .td-due { font-family: var(--mono); font-size: var(--micro); white-space: nowrap; min-height: 22px; padding: 0 8px; border-radius: 999px; display: inline-grid; place-items: center; background: var(--soft); color: var(--muted); }
+.pl .td-due.soon, .pl .td-due.today { background: var(--amber-soft); color: var(--amber); }
+.pl .td-due.late { background: var(--red-soft); color: var(--red); }
+
+/* ---- a prospect ---- */
+/* Where the deal stands (F35): numbered steps, done ones ticked, the current one lit, its next action beside. */
+.pl-flow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; padding: 10px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; }
+.pl-flow__steps { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; min-width: 0; }
+.pl-flow__step button { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-size: 13px; color: var(--muted); background: none; border: 0; border-radius: 999px; padding: 0 12px 0 6px; min-height: 36px; cursor: pointer; white-space: nowrap; }
+.pl-flow__step button:hover { color: var(--ink); background: var(--soft-2); }
+.pl-flow__num { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line); font-family: var(--mono); font-size: var(--micro); }
+.pl-flow__step.is-done button { color: var(--ink-2); }
+.pl-flow__step.is-done .pl-flow__num { background: var(--soft); border-color: transparent; color: var(--green); }
+.pl-flow__step.is-current button { background: var(--green); color: var(--on-green); font-weight: 600; }
+.pl-flow__step.is-current .pl-flow__num { border-color: currentColor; }
+.pl-flow__acts { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pl-flow__lost { color: var(--red); font-size: 13px; }
+/* "Meeting held on …?" when a meeting's day has passed. */
+.pl-ask { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 12px 16px; border-radius: 16px; background: var(--amber-soft); border: 1px solid var(--line-soft); }
+.pl-ask p { margin: 0 auto 0 0; font-weight: 500; color: var(--ink); }
+.pl .td-due.ask { background: var(--amber-soft); color: var(--amber); }
+/* Info · Onboarding */
+.pl-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+.pl-tab { font: inherit; font-size: 15px; color: var(--muted); background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 16px; min-height: 44px; cursor: pointer; margin-bottom: -1px; }
+.pl-tab:hover { color: var(--ink); }
+.pl-tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--green); }
+.pl-grid[hidden] { display: none; }
+.pl-grid--ob { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+.pl-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: var(--gap, 18px); align-items: start; }
+.pl-stack { display: grid; gap: var(--gap, 18px); min-width: 0; }
+/* Info tab: the right column runs as tall as the left, and Delete / Remove
+   sits at its bottom, away from the notes (NIRMATA, 23 Oct). */
+.pl-grid--info { align-items: stretch; }
+.pl-stack--end { display: flex; flex-direction: column; }
+.pl-stack--end > .pl-danger { margin-top: auto; }
+.pl-box .eyebrow { margin-bottom: 12px; }
+.pl-next { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 8px; align-items: center; }
+.pl-card__clock, .pl-clock { display: block; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.pl-next .text-input { min-width: 0; }
+.pl-worth { grid-template-columns: minmax(0, 1fr) auto; }
+.pl-when { margin: 10px 0 0; justify-self: start; }
+.pl-row { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 14px; }
+.pl-row:first-of-type { border-top: 0; }
+.pl-row__k { font-family: var(--mono); font-size: var(--micro); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+.pl-row__v { overflow-wrap: anywhere; color: var(--ink); }
+a.pl-row__v { color: var(--green); text-decoration: none; display: inline-flex; align-items: center; min-height: 40px; margin: -10px 0; }
+a.pl-row__v:hover { text-decoration: underline; }
+.pl-entities { display: grid; gap: 6px; }
+.pl-entity { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 12px; border-radius: 12px; background: var(--soft-2); }
+.pl-entity > div { display: grid; min-width: 0; }
+.pl-entity b { font-weight: 500; font-size: 14px; }
+.pl-entity small { color: var(--muted); font-size: 12.5px; }
+.pl-add { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .8fr) auto; gap: 8px; margin-top: 10px; }
+.pl-add .text-input { min-width: 0; }
+.pl-meter { height: 8px; border-radius: 999px; background: var(--soft); overflow: hidden; }
+.pl-meter i { display: block; height: 100%; background: var(--green); border-radius: 999px; }
+.pl-acts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.pl-sum { margin-top: 18px; border-top: 1px solid var(--line-soft); padding-top: 6px; }
+.pl-sum h3 { margin: 14px 0 6px; font-family: var(--mono); font-size: var(--micro); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.pl-sum dl { display: grid; grid-template-columns: minmax(110px, 190px) minmax(0, 1fr); gap: 4px 14px; margin: 0; font-size: 13.5px; }
+.pl-sum dt { color: var(--muted); }
+.pl-sum dd { margin: 0; overflow-wrap: anywhere; }
+.pl-notes { width: 100%; min-height: 120px; margin-bottom: 10px; }
+.pl-danger { display: flex; justify-content: flex-end; }
+.pl-modal .pl-acts { margin-top: 20px; }
+
+@media (max-width: 1100px) {
+  .pl-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  .pl-next, .pl-add { grid-template-columns: minmax(0, 1fr); }
+  .pl-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .pl-sum dl { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* quiet text buttons: remove a business, delete the prospect */
+.pl-text {
+  font: inherit; font-size: 13px; color: var(--muted); background: none; border: 0; cursor: pointer;
+  padding: 0 6px; min-height: 40px; flex: none;
+}
+.pl-text:hover { color: var(--ink); text-decoration: underline; }
+.pl-text.is-danger:hover { color: var(--red); }
+
+.pl-entity__links { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; }
+.pl-entity__links a { font-size: 12.5px; color: var(--green); text-decoration: none; overflow-wrap: anywhere; min-height: 24px; display: inline-flex; align-items: center; }
+.pl-entity__links a:hover { text-decoration: underline; }
+
+/* Which questionnaire (F31): a template, then tailored per prospect. */
+.pl-setup { display: grid; gap: 10px; margin-bottom: 14px; }
+.pl-setup__top { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.pl-setup__pick { flex: 1 1 220px; min-width: 0; min-height: 36px; }
+.pl-setup__more { border: 1px solid var(--line-soft); border-radius: 14px; padding: 4px 12px; }
+.pl-setup__more summary { cursor: pointer; padding: 8px 0; font-size: 13.5px; color: var(--ink-2); }
+.pl-setup__more[open] { padding-bottom: 12px; }
+.pl-setup__sec { padding: 8px 0; border-top: 1px solid var(--line-soft); }
+.pl-setup__sec.is-off { opacity: .65; }
+.pl-setup__fields { display: grid; gap: 4px; padding: 6px 0 0 26px; }
+.pl-check { display: flex; align-items: center; gap: 10px; min-height: 32px; font-size: 14px; cursor: pointer; }
+.pl-check b { font-weight: 500; }
+.pl-check.is-small { font-size: 13px; color: var(--ink-2); min-height: 28px; }
+.pl-check.is-own { justify-content: space-between; cursor: default; }
+.pl-check input { width: 16px; height: 16px; accent-color: var(--green); flex: none; }
+.pl-setup__add { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; margin-top: 4px; }
+.pl-setup__add.is-media { grid-template-columns: minmax(0, 1fr); }
+.pl-setup__add.is-media .btn { justify-self: start; }
+
+/* The light questionnaire's budget: Andy's eyes only. */
+.pl-budget { margin-top: 18px; padding: 14px 16px; border-radius: 14px; border: 1px dashed var(--line); }
+.pl-budget h3 { margin: 0 0 8px; font-family: var(--mono); font-size: var(--micro); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.pl-budget dl { display: grid; grid-template-columns: minmax(110px, 1fr) auto; gap: 4px 14px; margin: 0; font-size: 13.5px; }
+.pl-budget dt { color: var(--ink-2); }
+.pl-budget dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.pl-budget dd.is-pending { color: var(--muted); font-style: italic; }
+.pl-budget__total { margin: 10px 0 0; padding-top: 8px; border-top: 1px solid var(--line-soft); font-weight: 500; }
+
+/* The price points Andy reads from during a call (F32). */
+.pl-tiers { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; margin: 0 0 6px; font-size: 13.5px; }
+.pl-tiers dt { display: grid; gap: 2px; min-width: 0; }
+.pl-tiers dt b { font-weight: 500; color: var(--ink); }
+.pl-tiers dt small { color: var(--muted); font-size: 12.5px; }
+.pl-tiers dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; white-space: nowrap; }
+.pl-budget__sub { margin-top: 14px !important; padding-top: 10px; border-top: 1px solid var(--line-soft); }
+.pl-box > .pl-budget { margin-top: 0; padding: 0; border: 0; }
+
+/* The phone questionnaire (22 Oct): how the client gets it, and when each answer came in. */
+.pl-setup__mode { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.pl-setup__add { grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; }
+.pl-sum__at { display: block; color: var(--muted); font-size: var(--micro); }
+.pl-sum__at.is-client { color: var(--green); }
+@media (max-width: 700px) { .pl-setup__add { grid-template-columns: minmax(0, 1fr) auto; } }
+
+/* ---- the phone (P6 block 5, 14 Nov) ----
+   phone.css draws the frame. One line of head, the stage picker (each stage
+   with its count), and the picked column: its list is the one region that
+   scrolls. The board's sideways scroll is gone on a phone. */
+.pl-stagepick { display: none; }
+@media (max-width: 760px) {
+  .pl-screen > .pl-head { flex-wrap: nowrap; align-items: center; gap: 10px; padding-top: 6px; }
+  .pl-screen > .pl-head h1 { font-size: 30px; margin: 0; }
+  .pl-screen > .pl-head .pl-sub { display: none; }
+  .pl-screen > .pl-head > .btn { flex: 0 0 auto; }
+  .pl-stagepick { display: block; flex: none; width: 100%; height: 44px; min-height: 44px; }
+  .pl-screen > .pl-board { display: flex; flex-direction: column; overflow: visible; flex: 1 1 auto; min-height: 0; padding: 0; }
+  .pl-screen .pl-col { display: none; }
+  .pl-screen .pl-col.is-on { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+  .pl-screen .pl-col.is-on > .pl-col__head { display: none; }
+  .pl-screen .pl-col__list { min-height: 0; }
+}
